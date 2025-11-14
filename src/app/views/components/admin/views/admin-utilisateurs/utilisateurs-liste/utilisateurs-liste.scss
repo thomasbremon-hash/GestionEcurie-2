@@ -1,0 +1,47 @@
+/* Layout 2 colonnes */
+.layout {
+  display: grid;
+  grid-template-columns: 350px 1fr; /* Liste à gauche, contenu à droite */
+  gap: 20px;
+  height: calc(100vh - 80px); /* Ajuste selon ton header */
+  padding: 20px;
+}
+
+/* Colonne gauche : liste */
+.list-column {
+  overflow-y: auto;
+  padding-right: 10px;
+  border-right: 1px solid #e5e7eb;
+}
+
+/* Colonne droite : détails */
+.details-column {
+  padding: 20px;
+}
+
+/* Carte utilisateur */
+.user-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
+
+.user-card:hover {
+  background: #f8f5ff;
+  border-color: var(--primary);
+}
+
+.text-muted {
+  color: #999;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.btn {
+  background-color: var(--primary);
+  color: #ffffff;
+}

@@ -1,0 +1,14 @@
+body {
+  font-family: var(--font-family);
+  font-optical-sizing: auto;
+}
+.active-link {
+  background-color: var(--dark);
+  border-radius: var(--radius);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: white;
+}

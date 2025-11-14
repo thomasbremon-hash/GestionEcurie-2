@@ -1,0 +1,17 @@
+button {
+  padding: 16px;
+  font-size: 24px;
+  border: none;
+  color: white;
+  background-color: var(--primary);
+}
+ul {
+  position: absolute;
+  right: 12px;
+  top: 64px;
+  padding: 12px;
+  border: var(--border);
+  border-radius: var(--radius);
+  color: var(--text-color);
+  background-color: white;
+}

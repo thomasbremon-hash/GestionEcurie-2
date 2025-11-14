@@ -1,0 +1,6 @@
+<form [formGroup]="utilisateurForm" (ngSubmit)="submit()">
+  <app-user-base formControlName="userBase"></app-user-base>
+  <app-adresse formControlName="adresse"></app-adresse>
+
+  <button type="submit" class="btn btn-primary">Sauvegarder</button>
+</form>

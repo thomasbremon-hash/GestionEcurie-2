@@ -1,0 +1,19 @@
+<div [formGroup]="userForm" (blur)="markTouched()">
+  <div class="flex flex-col mb-6">
+    <label>Nom</label>
+    <input type="text" formControlName="nom" />
+    <small class="text-red-500" *ngIf="getError('nom')">{{ getError('nom') }}</small>
+  </div>
+
+  <div class="flex flex-col mb-6">
+    <label>Prénom</label>
+    <input type="text" formControlName="prenom" />
+    <small class="text-red-500" *ngIf="getError('prenom')">{{ getError('prenom') }}</small>
+  </div>
+
+  <div class="flex flex-col mb-6">
+    <label>Email</label>
+    <input type="email" formControlName="email" />
+    <small class="text-red-500" *ngIf="getError('email')">{{ getError('email') }}</small>
+  </div>
+</div>

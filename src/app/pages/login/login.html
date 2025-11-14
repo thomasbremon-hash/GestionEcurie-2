@@ -1,0 +1,56 @@
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+  <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 100%; max-width: 400px">
+    <div class="card-body">
+      <h2 class="text-center mb-4 fw-bold text-primary">Connexion</h2>
+
+      <form (ngSubmit)="onLogin()" #f="ngForm" novalidate>
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label fw-semibold">Adresse e-mail</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            class="form-control form-control-lg"
+            placeholder="exemple@domaine.com"
+            required
+          />
+          <div *ngIf="f.submitted && !email" class="text-danger small mt-1">
+            L’adresse e-mail est requise.
+          </div>
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="mb-3">
+          <label for="password" class="form-label fw-semibold">Mot de passe</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            class="form-control form-control-lg"
+            placeholder="••••••••"
+            required
+          />
+          <div *ngIf="f.submitted && !password" class="text-danger small mt-1">
+            Le mot de passe est requis.
+          </div>
+        </div>
+
+        <!-- Bouton -->
+        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" [disabled]="f.invalid">
+          <i class="bi bi-box-arrow-in-right me-2"></i> Se connecter
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-danger w-100 mt-3"
+          (click)="onLoginWithGoogle()"
+        >
+          <i class="bi bi-google me-2"></i> Se connecter avec Google
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

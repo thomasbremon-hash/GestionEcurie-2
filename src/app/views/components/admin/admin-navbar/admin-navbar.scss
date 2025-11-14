@@ -1,0 +1,37 @@
+.admin-nav {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  gap: 8px; // léger espace entre les liens
+}
+
+.admin-link {
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--gray-700);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: 0.2s ease;
+  display: block; // pour cliquer sur toute la ligne
+}
+
+/* Hover */
+.admin-link:hover {
+  background: rgba(126, 34, 206, 0.12); // var(--primary), très léger
+  color: var(--primary);
+  text-decoration: none;
+}
+
+/* Lien actif (routerLinkActive="active-link") */
+.active-link {
+  background: var(--primary);
+  color: white !important;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Focus clavier (accessibilité) */
+.admin-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
