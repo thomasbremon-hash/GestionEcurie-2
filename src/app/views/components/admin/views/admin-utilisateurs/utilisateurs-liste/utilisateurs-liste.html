@@ -1,31 +1,31 @@
-<div class="layout">
-  <!-- LISTE À GAUCHE -->
-  <div class="list-column">
-    <h3 class="mb-20">Liste des utilisateurs</h3>
+<h3 class="mb-20">Liste des utilisateurs</h3>
 
-    <ul>
-      @for (user of users(); track user._id; let i = $index) {
-
-      <li class="user-card mb-10 card p-12">
-        <div class="flex flex-col">
+<ul>
+  @for (user of users(); track user._id; let i = $index) {
+  <li
+    class="user-card mb-10 p-12 card"
+    [class.active]="selectedUtilisateur()?._id === user._id"
+    (click)="selectUser.emit(user)"
+  >
+    <div class="row align-items-center g-2">
+      <!-- Infos utilisateur -->
+      <div class="col-12 col-md-8">
+        <div class="d-flex flex-column">
           <span class="text-bold">{{ user.prenom }} {{ user.nom }}</span>
-          <span class="text-sm">{{ user.email }}</span>
+          <span class="text-sm text-muted">{{ user.email }}</span>
         </div>
+      </div>
 
-        <div class="flex gap-12 mt-10">
-          <a class="btn">Gérer les accès</a>
-          <a class="btn">Modifier</a>
-        </div>
-      </li>
-
-      } @empty {
-      <p class="text-muted">Aucun utilisateur trouvé.</p>
-      }
-    </ul>
-  </div>
-
-  <!-- ZONE DÉTAILS À DROITE -->
-  <div class="details-column">
-    <h3 class="text-muted">Sélectionnez un utilisateur pour afficher les détails ici</h3>
-  </div>
-</div>
+      <!-- Actions -->
+      <div
+        class="col-12 col-md-4 d-flex justify-content-md-end justify-content-start mt-2 mt-md-0 gap-2 flex-wrap"
+      >
+        <a (click)="manageAccesss(user)" class="btn btn-primary btn-sm">Gérer les accès</a>
+        <a class="btn btn-primary btn-sm">Modifier</a>
+      </div>
+    </div>
+  </li>
+  } @empty {
+  <p class="text-muted">Aucun utilisateur trouvé.</p>
+  }
+</ul>

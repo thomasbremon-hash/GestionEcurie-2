@@ -40,12 +40,12 @@ export class UtilisateurService {
     },
   });
 
-  
   users = computed(() => {
+    console.log('Reloading users from resource');
     return this.usersResource.hasValue() ? this.usersResource.value() : [];
   });
 
-/* async fetchUtilisateurs() {
+  /* async fetchUtilisateurs() {
     const utilisateurs = await getDocs(this.utilisateursRef);
     this.utilisateurs.set(
       utilisateurs.docs.map((c) => ({
@@ -89,27 +89,14 @@ export class UtilisateurService {
   */
   }
 
-  async updateUser(newUser: Partial<Utilisateur>) {
-    const docRef = await doc(this.utilisateursRef, newUser._id);
+  async updateUser(_id: string, newUser: Partial<Utilisateur>) {
+    const docRef = doc(this.utilisateursRef, _id);
     await setDoc(docRef, newUser, { merge: true });
-
-    /*
-    const document = doc(this.utilisateursRef, newUser._id);
-    console.log(document.id);
-    const docsnap = await getDoc(document);
-    if (docsnap.exists()) {
-      await setDoc(doc(this.utilisateursRef, newUser._id), newUser, { merge: true });
-    } else {
-      await setDoc(doc(this.utilisateursRef, newUser._id), newUser);
-    }
-
-  */
   }
 
   async deleteContact(id: string) {
     const docRef = doc(this.firestore, this.colllectionName, id);
     await deleteDoc(docRef);
-   
   }
 
   userExits = computed(async () => {
@@ -139,5 +126,9 @@ export class UtilisateurService {
     const q = query(this.utilisateursRef, where('email', '==', email));
     const snapshot = await getDocs(q);
     return !snapshot.empty;
+  }
+
+  refreshUsers() {
+    this.usersResource.reload(); // recharge la resource
   }
 }

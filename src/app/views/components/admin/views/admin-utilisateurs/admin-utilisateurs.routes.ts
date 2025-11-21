@@ -2,20 +2,22 @@ import { Routes } from '@angular/router';
 import { AdminUtilisateurs } from './admin-utilisateurs';
 import { ListeUtilisateurs } from './utilisateurs-liste/utilisateurs-liste';
 import { UtilisateursForm } from './utilisateurs-form/utilisateurs-form';
+import { Utilisateurs } from './utilisateurs/utilisateurs';
 
 export const routes: Routes = [
   {
     path: '',
-    component: AdminUtilisateurs,
-    children: [
-      {
-        path: 'list',
-        component: ListeUtilisateurs,
-      },
-      {
+    component: Utilisateurs},
+    {    
         path: 'new',
         component: UtilisateursForm,
       },
+   
+      {
+        path: 'list',
+        component: Utilisateurs,
+      },
+      
       {
         path: ':utilisateurId/edit',
         component: UtilisateursForm,
@@ -25,6 +27,6 @@ export const routes: Routes = [
         redirectTo: 'list',
         pathMatch: 'full',
       },
-    ],
-  },
+    
+ 
 ];

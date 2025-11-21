@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+ul {
+  list-style: disc;
+  padding-left: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}

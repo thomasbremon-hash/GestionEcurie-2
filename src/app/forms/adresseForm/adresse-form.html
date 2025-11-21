@@ -1,25 +1,25 @@
-<div [formGroup]="adresseForm" (blur)="markTouched()">
-  <div class="flex flex-col mb-6">
-    <label>Rue</label>
-    <input type="text" formControlName="rue" />
-    <small class="text-red-500" *ngIf="getError('rue')">{{ getError('rue') }}</small>
+<div [formGroup]="adresseForm" (blur)="markTouched()" class="row g-3 mt-3">
+  <div class="col-md-6">
+    <label class="form-label">Rue</label>
+    <input type="text" formControlName="rue" class="form-control" />
+    <div *ngIf="getError('rue')" class="text-danger small">{{ getError('rue') }}</div>
   </div>
 
-  <div class="flex flex-col mb-6">
-    <label>Ville</label>
-    <input type="text" formControlName="ville" />
-    <small class="text-red-500" *ngIf="getError('ville')">{{ getError('ville') }}</small>
+  <div class="col-md-6">
+    <label class="form-label">Ville</label>
+    <input type="text" formControlName="ville" class="form-control" />
+    <div *ngIf="getError('ville')" class="text-danger small">{{ getError('ville') }}</div>
   </div>
 
-  <div class="flex flex-col mb-6">
-    <label>Code postal</label>
-    <input type="text" formControlName="cp" />
-    <small class="text-red-500" *ngIf="getError('cp')">{{ getError('cp') }}</small>
+  <div class="col-md-6">
+    <label class="form-label">Code postal</label>
+    <input type="text" formControlName="cp" class="form-control" />
+    <div *ngIf="getError('cp')" class="text-danger small">{{ getError('cp') }}</div>
   </div>
 
-  <div class="flex flex-col mb-6">
-    <label>Pays</label>
-    <input type="text" formControlName="pays" />
-    <small class="text-red-500" *ngIf="getError('pays')">{{ getError('pays') }}</small>
+  <div class="col-md-6">
+    <label class="form-label">Pays</label>
+    <input type="text" formControlName="pays" class="form-control" />
+    <div *ngIf="getError('pays')" class="text-danger small">{{ getError('pays') }}</div>
   </div>
 </div>

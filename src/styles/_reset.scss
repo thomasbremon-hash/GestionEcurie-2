@@ -22,15 +22,10 @@ ul {
 
 img {
   max-width: 100%;
-}
-
-a:hover {
-  text-decoration: none;
+  border-radius: var(--radius);
 }
 
 a {
   text-decoration: none;
   color: inherit;
-  padding: 6px 12px;
-  display: inline-block;
 }

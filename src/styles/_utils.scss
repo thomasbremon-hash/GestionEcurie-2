@@ -1,72 +1,109 @@
+/* Flex utilities */
 .flex {
   display: flex;
 }
-
 .flex-row {
   flex-direction: row;
 }
-
 .flex-col {
   flex-direction: column;
 }
-
 .flex-auto {
   flex: 1 1 auto;
 }
-
-.justify-content-center {
+.align-center {
+  align-items: center;
+}
+.justify-center {
   justify-content: center;
 }
 
-.align-items-center {
-  align-items: center;
+/* Gap utilities */
+.gap-8 {
+  gap: 8px;
 }
-
 .gap-12 {
   gap: 12px;
 }
-
 .gap-16 {
   gap: 16px;
 }
-
-.text-sm {
-  font-size: 0.75rem;
+.gap-24 {
+  gap: 24px;
 }
 
-.text-lg {
-  font-size: 1.5rem;
+/* Padding & Margin */
+.p-12 {
+  padding: 12px;
 }
-
-.text-semibold {
-  font-weight: 500;
+.p-16 {
+  padding: 16px;
 }
-
-.text-bold {
-  font-weight: 700;
+.p-20 {
+  padding: 20px;
 }
-
-.my-2 {
-  margin-top: 2px;
-  margin-bottom: 2px;
+.p-24 {
+  padding: 24px;
 }
-
+.py-6 {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
 .mb-10 {
   margin-bottom: 10px;
 }
-
 .mb-20 {
   margin-bottom: 20px;
 }
-
 .m-10 {
   margin: 10px;
 }
-
 .m-20 {
   margin: 20px;
 }
+.my-2 {
+  margin: 2px 0;
+}
 
-.p-12 {
-  padding: 12px;
+/* Width */
+.w-1-3 {
+  width: 33.33%;
+}
+.w-half {
+  width: 50%;
+}
+.w-full {
+  width: 100%;
+}
+
+/* Rounded & shadow */
+.rounded {
+  border-radius: var(--radius);
+}
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+.rounded-btn {
+  border-radius: var(--radius-btn);
+}
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Scroll */
+.scroll-y {
+  overflow-y: auto;
+}
+.list-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.list-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--gray-300);
+  border-radius: 3px;
 }

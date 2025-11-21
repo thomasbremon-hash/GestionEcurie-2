@@ -1,0 +1,22 @@
+<h3 class="mb-4">Création d'entreprise</h3>
+
+<form [formGroup]="entrepriseForm" (ngSubmit)="submit()" class="card p-4 shadow-sm">
+  <div class="row g-4">
+    <!-- Partie entreprise base -->
+    <div class="col-12">
+      <app-entreprise-base formControlName="entrepriseBaseForm"></app-entreprise-base>
+    </div>
+
+    <!-- Partie adresse -->
+    <div class="col-12">
+      <app-adresse formControlName="adresse"></app-adresse>
+    </div>
+  </div>
+
+  <!-- Bouton submit -->
+  <div class="mt-4 text-end">
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-save me-2"></i> Sauvegarder
+    </button>
+  </div>
+</form>

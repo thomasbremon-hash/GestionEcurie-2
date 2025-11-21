@@ -1,0 +1,30 @@
+<div [formGroup]="entrepriseBaseForm" (blur)="markTouched()" class="row g-3">
+  <div class="col-md-4">
+    <label class="form-label">Nom</label>
+    <input type="text" formControlName="nom" class="form-control" />
+    <div *ngIf="getError('nom')" class="text-danger small">{{ getError('nom') }}</div>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Email</label>
+    <input type="email" formControlName="email" class="form-control" />
+    <div *ngIf="getError('email')" class="text-danger small">{{ getError('email') }}</div>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Siret</label>
+    <input type="text" formControlName="siret" class="form-control" />
+    <div *ngIf="getError('siret')" class="text-danger small">{{ getError('siret') }}</div>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Siren</label>
+    <input type="text" formControlName="siren" class="form-control" />
+    <div *ngIf="getError('siren')" class="text-danger small">{{ getError('siren') }}</div>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Téléphone</label>
+    <input type="text" formControlName="telephone" class="form-control" />
+    <div *ngIf="getError('telephone')" class="text-danger small">{{ getError('telephone') }}</div>
+  </div>
+</div>

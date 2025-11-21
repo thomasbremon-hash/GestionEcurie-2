@@ -1,0 +1,18 @@
+<div class="flex-auto">
+  <div class="flex gap-24">
+    <!-- LISTE -->
+    <app-entreprises-liste
+      (selectEntreprise)="selectEntreprise($event)"
+      [selectedEntreprise]="selectedEntreprise()"
+      [entreprises]="entreprises()"
+      class="w-half card"
+    ></app-entreprises-liste>
+
+    <!-- DETAILS -->
+    <app-entreprises-details
+      class="w-half card"
+      style="min-width: 300px; max-width: 750px"
+      [uneEntreprise]="selectedEntreprise()"
+    ></app-entreprises-details>
+  </div>
+</div>

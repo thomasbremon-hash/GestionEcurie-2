@@ -12,5 +12,3 @@ export interface Utilisateur {
   uid?: string;
   pays: string;
 }
-
-

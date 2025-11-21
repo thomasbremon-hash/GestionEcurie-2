@@ -6,6 +6,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './admin-navbar.html',
   styleUrl: './admin-navbar.scss',
-  host: { class: 'card flex flex-col p-12' },
+  host: { class: 'card flex flex-col' },
 })
 export class AdminNavbar {}

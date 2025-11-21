@@ -1,0 +1,75 @@
+<h2 class="mb-4">Détails de l'entreprise</h2>
+
+<div class="card shadow-sm p-4 flex flex-col">
+  <div class="row g-3">
+    <!-- Email -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Email</small>
+        <span class="fw-semibold">{{ entreprise()?.email }}</span>
+      </div>
+    </div>
+
+    <!-- Nom -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Nom</small>
+        <span class="fw-semibold">{{ entreprise()?.nom }}</span>
+      </div>
+    </div>
+
+    <!-- Rue -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Rue</small>
+        <span class="fw-semibold">{{ entreprise()?.rue }}</span>
+      </div>
+    </div>
+
+    <!-- Code postal -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Code postal</small>
+        <span class="fw-semibold">{{ entreprise()?.cp }}</span>
+      </div>
+    </div>
+
+    <!-- Ville -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Ville</small>
+        <span class="fw-semibold">{{ entreprise()?.ville }}</span>
+      </div>
+    </div>
+
+    <!-- Pays -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Pays</small>
+        <span class="fw-semibold">{{ entreprise()?.pays }}</span>
+      </div>
+    </div>
+
+    <!-- Siret -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Numéro de Siret</small>
+        <span class="fw-semibold">{{ entreprise()?.siret }}</span>
+      </div>
+    </div>
+
+    <!-- Téléphone -->
+    <div class="col-12 col-lg-6">
+      <div class="d-flex flex-column">
+        <small class="text-muted">Téléphone</small>
+        <span class="fw-semibold">{{ entreprise()?.telephone }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boutons d'action (optionnel) -->
+  <div class="mt-4 d-flex gap-2">
+    <button class="btn btn-primary btn-sm" (click)="goToEdit()">Modifier</button>
+    <button (click)="deleteEntreprise()" class="btn btn-outline-primary btn-sm">Supprimer</button>
+  </div>
+</div>

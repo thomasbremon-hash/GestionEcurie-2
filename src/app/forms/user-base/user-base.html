@@ -1,19 +1,19 @@
-<div [formGroup]="userForm" (blur)="markTouched()">
-  <div class="flex flex-col mb-6">
-    <label>Nom</label>
-    <input type="text" formControlName="nom" />
-    <small class="text-red-500" *ngIf="getError('nom')">{{ getError('nom') }}</small>
+<div [formGroup]="userForm" (blur)="markTouched()" class="row g-3">
+  <div class="col-md-4">
+    <label class="form-label">Nom</label>
+    <input type="text" formControlName="nom" class="form-control" />
+    <div *ngIf="getError('nom')" class="text-danger small">{{ getError('nom') }}</div>
   </div>
 
-  <div class="flex flex-col mb-6">
-    <label>Prénom</label>
-    <input type="text" formControlName="prenom" />
-    <small class="text-red-500" *ngIf="getError('prenom')">{{ getError('prenom') }}</small>
+  <div class="col-md-4">
+    <label class="form-label">Prénom</label>
+    <input type="text" formControlName="prenom" class="form-control" />
+    <div *ngIf="getError('prenom')" class="text-danger small">{{ getError('prenom') }}</div>
   </div>
 
-  <div class="flex flex-col mb-6">
-    <label>Email</label>
-    <input type="email" formControlName="email" />
-    <small class="text-red-500" *ngIf="getError('email')">{{ getError('email') }}</small>
+  <div class="col-md-4">
+    <label class="form-label">Email</label>
+    <input type="email" formControlName="email" class="form-control" />
+    <div *ngIf="getError('email')" class="text-danger small">{{ getError('email') }}</div>
   </div>
 </div>
