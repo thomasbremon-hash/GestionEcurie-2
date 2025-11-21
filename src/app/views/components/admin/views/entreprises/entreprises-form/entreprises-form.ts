@@ -5,11 +5,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AdresseForm } from '../../../../../../forms/adresseForm/adresse-form';
 import { Entreprise } from '../../../../../../interface/entreprise';
 import { EntrepriseBase } from '../../../../../../forms/entreprise-base/entreprise-base';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-entreprises-form',
-  imports: [CommonModule, ReactiveFormsModule, AdresseForm, EntrepriseBase],
+  imports: [ReactiveFormsModule, AdresseForm, EntrepriseBase],
   templateUrl: './entreprises-form.html',
   styleUrl: './entreprises-form.scss',
 })

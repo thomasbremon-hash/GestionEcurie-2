@@ -9,11 +9,11 @@ import {
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { UtilisateurValidators } from '../../services/validators.service';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-entreprise-base',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

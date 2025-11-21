@@ -13,46 +13,50 @@
           required
           class="form-control"
           placeholder="exemple@gmail.com"
-        />
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Mot de passe</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            minlength="6"
+            class="form-control"
+            placeholder="Mot de passe"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+            <input
+              id="confirmPassword"
+              type="password"
+              name="confirmPassword"
+              [(ngModel)]="confirmPassword"
+              required
+              class="form-control"
+              placeholder="Confirmez le mot de passe"
+              />
+            </div>
+
+            @if (errorMessage) {
+              <div class="alert alert-danger py-2">{{ errorMessage }}</div>
+            }
+            @if (successMessage) {
+              <div class="alert alert-success py-2">{{ successMessage }}</div>
+            }
+
+            <button [disabled]="f.invalid" type="submit" class="btn btn-primary w-100 mt-2">
+              S'inscrire
+            </button>
+
+            <div class="text-center mt-3">
+              <a routerLink="/login">Déjà un compte ? Se connecter</a>
+            </div>
+          </form>
+        </div>
       </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label">Mot de passe</label>
-        <input
-          id="password"
-          type="password"
-          name="password"
-          [(ngModel)]="password"
-          required
-          minlength="6"
-          class="form-control"
-          placeholder="Mot de passe"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
-        <input
-          id="confirmPassword"
-          type="password"
-          name="confirmPassword"
-          [(ngModel)]="confirmPassword"
-          required
-          class="form-control"
-          placeholder="Confirmez le mot de passe"
-        />
-      </div>
-
-      <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
-      <div *ngIf="successMessage" class="alert alert-success py-2">{{ successMessage }}</div>
-
-      <button [disabled]="f.invalid" type="submit" class="btn btn-primary w-100 mt-2">
-        S'inscrire
-      </button>
-
-      <div class="text-center mt-3">
-        <a routerLink="/login">Déjà un compte ? Se connecter</a>
-      </div>
-    </form>
-  </div>
-</div>

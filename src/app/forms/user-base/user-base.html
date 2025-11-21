@@ -2,18 +2,24 @@
   <div class="col-md-4">
     <label class="form-label">Nom</label>
     <input type="text" formControlName="nom" class="form-control" />
-    <div *ngIf="getError('nom')" class="text-danger small">{{ getError('nom') }}</div>
+    @if (getError('nom')) {
+      <div class="text-danger small">{{ getError('nom') }}</div>
+    }
   </div>
 
   <div class="col-md-4">
     <label class="form-label">Prénom</label>
     <input type="text" formControlName="prenom" class="form-control" />
-    <div *ngIf="getError('prenom')" class="text-danger small">{{ getError('prenom') }}</div>
+    @if (getError('prenom')) {
+      <div class="text-danger small">{{ getError('prenom') }}</div>
+    }
   </div>
 
   <div class="col-md-4">
     <label class="form-label">Email</label>
     <input type="email" formControlName="email" class="form-control" />
-    <div *ngIf="getError('email')" class="text-danger small">{{ getError('email') }}</div>
+    @if (getError('email')) {
+      <div class="text-danger small">{{ getError('email') }}</div>
+    }
   </div>
 </div>

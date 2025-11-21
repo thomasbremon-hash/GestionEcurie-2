@@ -2,24 +2,32 @@
   <div class="col-md-6">
     <label class="form-label">Rue</label>
     <input type="text" formControlName="rue" class="form-control" />
-    <div *ngIf="getError('rue')" class="text-danger small">{{ getError('rue') }}</div>
+    @if (getError('rue')) {
+      <div class="text-danger small">{{ getError('rue') }}</div>
+    }
   </div>
 
   <div class="col-md-6">
     <label class="form-label">Ville</label>
     <input type="text" formControlName="ville" class="form-control" />
-    <div *ngIf="getError('ville')" class="text-danger small">{{ getError('ville') }}</div>
+    @if (getError('ville')) {
+      <div class="text-danger small">{{ getError('ville') }}</div>
+    }
   </div>
 
   <div class="col-md-6">
     <label class="form-label">Code postal</label>
     <input type="text" formControlName="cp" class="form-control" />
-    <div *ngIf="getError('cp')" class="text-danger small">{{ getError('cp') }}</div>
+    @if (getError('cp')) {
+      <div class="text-danger small">{{ getError('cp') }}</div>
+    }
   </div>
 
   <div class="col-md-6">
     <label class="form-label">Pays</label>
     <input type="text" formControlName="pays" class="form-control" />
-    <div *ngIf="getError('pays')" class="text-danger small">{{ getError('pays') }}</div>
+    @if (getError('pays')) {
+      <div class="text-danger small">{{ getError('pays') }}</div>
+    }
   </div>
 </div>

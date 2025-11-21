@@ -7,7 +7,7 @@ import {
   
   Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { AuthService } from '../../../../services/auth.service';
 import { UtilisateurService } from '../../../../services/utilisateur.service';
 import { SessionService } from '../../../../services/session.service';
@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-ajouter-utilisateur',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UserBase, AdresseForm],
+  imports: [ReactiveFormsModule, UserBase, AdresseForm],
   templateUrl: './ajouter-utilisateur.html',
   styleUrls: ['./ajouter-utilisateur.scss'],
 })

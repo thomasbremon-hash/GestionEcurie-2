@@ -1,7 +1,7 @@
 import { Component, inject, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { AuthService } from '../../services/auth.service';
 import { UtilisateurService } from '../../services/utilisateur.service';
 import { SessionService } from '../../services/session.service';
@@ -9,7 +9,7 @@ import { SessionService } from '../../services/session.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './register.html',
   styleUrls: ['./register.scss'],
 })

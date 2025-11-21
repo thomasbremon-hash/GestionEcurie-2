@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { CommonModule } from '@angular/common';
+
 import { UtilisateurValidators } from '../../services/validators.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { UtilisateurValidators } from '../../services/validators.service';
   standalone: true,
    templateUrl: './user-base.html',
   styleUrls: ['./user-base.scss'],
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

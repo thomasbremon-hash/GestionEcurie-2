@@ -1,6 +1,6 @@
 import { Component, inject, effect, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilisateurService } from '../../../../../../services/utilisateur.service';
 
@@ -11,7 +11,7 @@ import { Utilisateur } from '../../../../../../interface/user';
 @Component({
   selector: 'app-ajouter-utilisateur',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UserBase, AdresseForm],
+  imports: [ReactiveFormsModule, UserBase, AdresseForm],
   templateUrl: './utilisateurs-form.html',
   styleUrl: './utilisateurs-form.scss',
 })

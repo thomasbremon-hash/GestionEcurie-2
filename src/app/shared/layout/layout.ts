@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterModule } from '@angular/router';
 import { SidebarService, SubMenuItem } from '../../services/sidebar.service';
 import { AuthService } from '../../services/auth.service';
@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-layout',
 
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './layout.html',
   styleUrls: ['./layout.scss'],
 })
