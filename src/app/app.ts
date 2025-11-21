@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Layout } from './shared/layout/layout';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { Header } from './shared/components/header/header';

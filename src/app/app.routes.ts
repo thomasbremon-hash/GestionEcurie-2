@@ -7,12 +7,9 @@ import { Routes } from '@angular/router';
 import { Home } from './home/home';
 // import { DashboardAdmin } from './pages/admin/dashboard-admin';
 // import { Entreprises } from './pages/gestionnaire/entreprises';
-import { ListeUtilisateurs } from './pages/admin/utilisateurs/liste-utilisateurs/liste-utilisateurs';
-import { ListeEntreprises } from './pages/admin/entreprises/liste-entreprises/liste-entreprises';
-import { ListeChevaux } from './pages/admin/chevaux/liste-chevaux/liste-chevaux';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
-import { RegisterEmail } from './pages/register-email/register-email';
+import { Login } from '../app/features/auth/login/login';
+import { Register } from './features/auth/register/register';
+import { RegisterEmail } from './features/auth/register-email/register-email';
 // import { ListeCollaborateurs } from './pages/collaborateurs/liste-collaborateurs';
 // import { ListeClients } from './pages/client/liste-clients';
 // import { DashboardCompta } from './pages/comptabilite/dashboard-compta';
@@ -25,8 +22,7 @@ export const routes: Routes = [
   // Section Admin
   {
     path: 'admin',
-    loadChildren: async () =>
-      (await import('./views/components/admin/admin.routes/admin.routes')).routes,
+    loadChildren: async () => (await import('./features/sidebar/admin.routes/admin.routes')).routes,
   },
 
   {
