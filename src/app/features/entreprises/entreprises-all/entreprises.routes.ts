@@ -5,7 +5,7 @@ import { EntreprisesForm } from '../entreprises-form/entreprises-form';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'list',
     component: Entreprises,
   },
   {

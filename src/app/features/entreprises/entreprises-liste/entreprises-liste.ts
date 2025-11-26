@@ -10,10 +10,10 @@ import { EntrepriseService } from '../entreprises.service';
   styleUrl: './entreprises-liste.scss',
 })
 export class EntreprisesListe {
-  entrepriseservce = inject(EntrepriseService);
+  entrepriseservice = inject(EntrepriseService);
   router = inject(Router);
 
-  entreprises = input<Entreprise[]>([]);
+  lesEntreprises = input<Entreprise[]>([]);
   selectedEntreprise = input<Entreprise | null>(null);
 
   selectEntreprise = output<Entreprise>();

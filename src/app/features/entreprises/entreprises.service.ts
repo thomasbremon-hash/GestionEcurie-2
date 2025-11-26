@@ -26,7 +26,11 @@ export class EntrepriseService {
   entreprises = signal<Entreprise[]>([]);
   entrepriseID = signal<string | null>(null);
 
-  entreprise = toSignal<Entreprise>(from(this.getEntreprise(this.entrepriseID()!)));
+  entreprise = computed(() => {
+    const id = this.entrepriseID();
+    if (!id) return null;
+    return toSignal(from(this.getEntreprise(id)))();
+  });
 
   entreprisesResource = resource({
     loader: async (): Promise<Entreprise[]> => {
@@ -36,6 +40,11 @@ export class EntrepriseService {
       });
       return documents;
     },
+  });
+
+  lesEntreprises = computed(() => {
+    console.log('Reloading entreprises from resource');
+    return this.entreprisesResource.hasValue() ? this.entreprisesResource.value() : [];
   });
 
   async getEntreprise(id: string): Promise<Entreprise> {
@@ -71,11 +80,9 @@ export class EntrepriseService {
       _id: data._id,
       nom: data.nom!,
       email: data.email!,
-      emailVerified: data.emailVerified,
       rue: data.rue!,
       ville: data.ville!,
       cp: data.cp!,
-      uid: data.uid,
       pays: data.pays!,
       siret: data.siret,
       siren: data.siren,

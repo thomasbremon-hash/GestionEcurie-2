@@ -1,7 +1,7 @@
 <h3 class="mb-20">Liste des entreprises</h3>
 
 <ul>
-  @for (entreprise of entreprises(); track entreprise._id; let i = $index) {
+  @for (entreprise of lesEntreprises(); track entreprise._id; let i = $index) {
   <li
     class="entreprise-card mb-10 p-12 card"
     [class.active]="selectedEntreprise()?._id === entreprise._id"

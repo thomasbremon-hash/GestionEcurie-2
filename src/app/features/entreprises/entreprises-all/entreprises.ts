@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { EntreprisesListe } from '../entreprises-liste/entreprises-liste';
 import { EntreprisesDetails } from '../entreprises-details/entreprises-details';
 import { Entreprise } from '../entreprise-data';
@@ -14,10 +14,19 @@ import { Router } from '@angular/router';
 export class Entreprises {
   entrepriseservice = inject(EntrepriseService);
   router = inject(Router);
-  entreprises = this.entrepriseservice.entreprises;
+
+  lesEntreprises = this.entrepriseservice.lesEntreprises;
   selectedEntreprise = signal<Entreprise | null>(null);
   selectedEntrepriseName = computed(() => this.selectedEntreprise()?._id);
 
+  constructor() {
+    effect(() => {
+      console.log('Entreprises  :', this.lesEntreprises());
+      console.log('Entreprise sélectionné :', this.selectedEntreprise());
+    });
+
+    this.entrepriseservice.entreprisesResource.reload();
+  }
   selectEntreprise(entrepriseName: Entreprise) {
     // const newUtilisateur = this.utilisateurs().find(({ nom }) => nom === utilisateurName);
     if (entrepriseName) {

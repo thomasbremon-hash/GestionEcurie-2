@@ -176,13 +176,12 @@ export class UtilisateursDetail {
 
     try {
       if (id) {
-        // 🔵 MODE ÉDITION
         await this.userService.updateUser(id, { _id: id, ...newUser });
-        console.log('📝 Utilisateur mis à jour');
+        console.log('Utilisateur mis à jour');
       } else {
         // 🟢 MODE AJOUT
         await this.userService.addUser(newUser);
-        console.log('➕ Utilisateur ajouté');
+        console.log('Utilisateur ajouté');
       }
 
       // Rafraîchir la liste
@@ -191,7 +190,7 @@ export class UtilisateursDetail {
       // Retour Liste
       await this.router.navigate(['/admin/utilisateurs']);
     } catch (err) {
-      console.error('❌ Erreur lors de la sauvegarde :', err);
+      console.error('Erreur lors de la sauvegarde :', err);
     }
   }
 
