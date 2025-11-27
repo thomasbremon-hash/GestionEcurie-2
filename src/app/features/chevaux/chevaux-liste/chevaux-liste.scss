@@ -1,0 +1,17 @@
+li:hover {
+  cursor: pointer;
+  background-color: var(--light);
+  transition: all 0.4s;
+  border-radius: var(--radius);
+}
+
+.cheval-card {
+  background-color: #fff; /* Couleur par défaut */
+  transition: background-color 0.3s; /* effet doux */
+  cursor: pointer;
+}
+
+.cheval-card.active {
+  background-color: var(--light);
+  border-color: var(--primary);
+}

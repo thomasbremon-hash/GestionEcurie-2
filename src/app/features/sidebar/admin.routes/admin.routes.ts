@@ -24,6 +24,13 @@ export const routes: Routes = [
           (await import('../../entreprises/entreprises-all/entreprises.routes')).routes,
       },
 
+      {
+        path: 'chevaux',
+        loadComponent: async () =>
+          (await import('../../chevaux/chevaux-all/admin-chevaux')).AdminChevaux,
+        loadChildren: async () => (await import('../../chevaux/chevaux-all/chevaux.routes')).routes,
+      },
+
       // {
       //   path: 'entreprises',
       //   component: AdminCocktailsComponent,

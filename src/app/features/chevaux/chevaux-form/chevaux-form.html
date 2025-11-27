@@ -1,1 +1,21 @@
-<p>chevaux-form works!</p>
+
+<h3 class="mb-4">Nouveau cheval</h3>
+
+<form [formGroup]="chevalForm" (ngSubmit)="submit()" class="card p-4 shadow-sm">
+  <div class="row g-4">
+    <!-- Partie cheval base -->
+    <div class="col-12">
+      <app-cheval-base formControlName="chevalFormBase"></app-cheval-base>
+    </div>
+  </div>
+  <!-- Bouton submit -->
+  <div class="mt-4 text-end">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="chevalForm.invalid || chevalForm.pristine"
+    >
+      <i class="bi bi-save me-2"></i> Sauvegarder
+    </button>
+  </div>
+</form>

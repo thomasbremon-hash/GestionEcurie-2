@@ -3,7 +3,7 @@
     <label class="form-label">Nom</label>
     <input type="text" formControlName="nom" class="form-control" />
     @if (getError('nom')) {
-      <div class="text-danger small">{{ getError('nom') }}</div>
+    <div class="text-danger small">{{ getError('nom') }}</div>
     }
   </div>
 
@@ -11,7 +11,7 @@
     <label class="form-label">Prénom</label>
     <input type="text" formControlName="prenom" class="form-control" />
     @if (getError('prenom')) {
-      <div class="text-danger small">{{ getError('prenom') }}</div>
+    <div class="text-danger small">{{ getError('prenom') }}</div>
     }
   </div>
 
@@ -19,7 +19,53 @@
     <label class="form-label">Email</label>
     <input type="email" formControlName="email" class="form-control" />
     @if (getError('email')) {
-      <div class="text-danger small">{{ getError('email') }}</div>
+    <div class="text-danger small">{{ getError('email') }}</div>
     }
+  </div>
+
+  <div class="col-md-12">
+    <label class="form-label">Rôles</label>
+
+    <div class="d-flex flex-column gap-2">
+      <label>
+        <input
+          type="checkbox"
+          value="admin"
+          (change)="toggleRole('admin')"
+          [checked]="hasRole('admin')"
+        />
+        Admin
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          value="gestionnaire"
+          (change)="toggleRole('gestionnaire')"
+          [checked]="hasRole('gestionnaire')"
+        />
+        Gestionnaire
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          value="client"
+          (change)="toggleRole('client')"
+          [checked]="hasRole('client')"
+        />
+        Client
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          value="comptabilite"
+          (change)="toggleRole('comptabilite')"
+          [checked]="hasRole('comptabilite')"
+        />
+        Comptabilité
+      </label>
+    </div>
   </div>
 </div>

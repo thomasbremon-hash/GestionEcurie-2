@@ -1,4 +1,4 @@
-import { Component, forwardRef, OnDestroy } from '@angular/core';
+import { Component, forwardRef, OnDestroy, signal } from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -7,30 +7,26 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { UtilisateurValidators } from '../../services/validators.service';
 import { Subject, takeUntil } from 'rxjs';
 
-import { UtilisateurValidators } from '../../services/validators.service';
-
 @Component({
-  selector: 'app-user-base',
-  standalone: true,
-  templateUrl: './user-base.html',
-  styleUrls: ['./user-base.scss'],
+  selector: 'app-cheval-base',
   imports: [ReactiveFormsModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => UserBase),
+      useExisting: forwardRef(() => ChevalBase),
       multi: true,
     },
   ],
+  templateUrl: './cheval-base.html',
+  styleUrl: './cheval-base.scss',
 })
-export class UserBase implements ControlValueAccessor, OnDestroy {
-  userForm = new FormGroup({
-    prenom: new FormControl('', [Validators.required, UtilisateurValidators.onlyLetters()]),
+export class ChevalBase implements ControlValueAccessor, OnDestroy {
+  chevalBaseForm = new FormGroup({
     nom: new FormControl('', [Validators.required, UtilisateurValidators.onlyLetters()]),
-    email: new FormControl('', [Validators.required, UtilisateurValidators.emailValid()]),
-    roles: new FormControl<string[]>([], Validators.required),
+    dateNaissance: new FormControl('', [Validators.required]),
   });
 
   private destroy$ = new Subject<void>();
@@ -43,12 +39,12 @@ export class UserBase implements ControlValueAccessor, OnDestroy {
   }
 
   writeValue(value: any): void {
-    if (value) this.userForm.patchValue(value, { emitEvent: false });
+    if (value) this.chevalBaseForm.patchValue(value, { emitEvent: false });
   }
 
   registerOnChange(fn: (value: any) => void): void {
     this.onChange = fn;
-    this.userForm.valueChanges
+    this.chevalBaseForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((val) => this.onChange(val));
   }
@@ -58,7 +54,7 @@ export class UserBase implements ControlValueAccessor, OnDestroy {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    isDisabled ? this.userForm.disable() : this.userForm.enable();
+    isDisabled ? this.chevalBaseForm.disable() : this.chevalBaseForm.enable();
   }
 
   markTouched() {
@@ -67,30 +63,12 @@ export class UserBase implements ControlValueAccessor, OnDestroy {
 
   // Helper pour affichage d’erreurs dans le template
   getError(controlName: string): string | null {
-    const control = this.userForm.get(controlName);
+    const control = this.chevalBaseForm.get(controlName);
     if (!control || !control.touched || !control.errors) return null;
 
     if (control.errors['required']) return 'Ce champ est requis.';
     if (control.errors['onlyLetters']) return 'Ce champ ne peut contenir que des lettres.';
     if (control.errors['emailInvalid']) return 'Adresse email invalide.';
     return null;
-  }
-
-  // Vérifie si un rôle est présent
-  hasRole(role: string): boolean {
-    return this.userForm.value.roles?.includes(role) ?? false;
-  }
-
-  // Ajoute ou retire un rôle au formulaire
-  toggleRole(role: string) {
-    let roles = this.userForm.value.roles ?? [];
-
-    if (roles.includes(role)) {
-      roles = roles.filter((r) => r !== role);
-    } else {
-      roles = [...roles, role];
-    }
-
-    this.userForm.patchValue({ roles });
   }
 }

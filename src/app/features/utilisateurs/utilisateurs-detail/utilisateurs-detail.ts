@@ -82,6 +82,7 @@ export class UtilisateursDetail {
       prenom: string;
       nom: string;
       email: string;
+      roles: string[];
     } | null>(null, Validators.required),
 
     adresse: new FormControl<{
@@ -110,6 +111,7 @@ export class UtilisateursDetail {
             prenom: u.prenom,
             nom: u.nom,
             email: u.email,
+            roles: u.roles ?? [],
           },
           adresse: {
             rue: u.rue,
@@ -135,6 +137,7 @@ export class UtilisateursDetail {
           prenom: data.prenom,
           nom: data.nom,
           email: data.email,
+          roles: data.roles,
         },
         adresse: {
           rue: data.rue,
@@ -159,13 +162,14 @@ export class UtilisateursDetail {
     const formValue = this.utilisateurForm.value;
     if (!formValue.userBase || !formValue.adresse) return;
 
-    const { prenom, nom, email } = formValue.userBase;
+    const { prenom, nom, email, roles } = formValue.userBase;
     const { rue, ville, cp, pays } = formValue.adresse;
 
     const newUser: Partial<Utilisateur> = {
       prenom,
       nom,
       email,
+      roles,
       rue,
       ville,
       cp,

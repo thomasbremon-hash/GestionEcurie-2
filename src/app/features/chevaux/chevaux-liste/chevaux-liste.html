@@ -1,1 +1,28 @@
-<p>chevaux-liste works!</p>
+<h3 class="mb-20">Liste des chevaux</h3>
+
+<ul>
+  @for (cheval of lesChevaux(); track cheval._id; let i = $index) {
+  <li
+    class="cheval-card mb-10 p-12 card"
+    [class.active]="selectedCheval()?._id === cheval._id"
+    (click)="selectCheval.emit(cheval)"
+  >
+    <div class="row align-items-center g-2">
+      <!-- Infos utilisateur -->
+      <div class="col-12 col-md-8">
+        <div class="d-flex flex-column">
+          <span class="text-bold">{{ cheval.nom }}</span>
+          <span class="text-sm text-muted">{{ cheval.dateNaissance }}</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div
+        class="col-12 col-md-4 d-flex justify-content-md-end justify-content-start mt-2 mt-md-0 gap-2 flex-wrap"
+      ></div>
+    </div>
+  </li>
+  } @empty {
+  <p class="text-muted">Aucun cheval trouvé.</p>
+  }
+</ul>

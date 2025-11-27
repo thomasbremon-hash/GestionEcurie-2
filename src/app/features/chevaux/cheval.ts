@@ -1,14 +1,8 @@
 import { signal } from '@angular/core';
 import { form } from '@angular/forms/signals';
 
-interface chevalData {
+export interface Cheval {
+  _id: string;
   nom: string;
   dateNaissance: string;
-}
-export class LoginComponent {
-  chevalModel = signal<chevalData>({
-    nom: '',
-    dateNaissance: '',
-  });
-  chevalForm = form(this.chevalModel);
 }

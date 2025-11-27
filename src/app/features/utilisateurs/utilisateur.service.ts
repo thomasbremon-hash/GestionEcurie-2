@@ -113,12 +113,11 @@ export class UtilisateurService {
       displayName: data.displayName!,
       email: data.email!,
       emailVerified: data.emailVerified,
-      rue: data.rue!,
-      ville: data.ville!,
-      cp: data.cp!,
+      adresse: data.adresse,
       dateNaissance: data.dateNaissance!,
       uid: data.uid,
-      pays: data.pays!,
+
+      roles: data.roles ?? [],
     };
   }
 

@@ -7,6 +7,7 @@ import { UtilisateurService } from '../utilisateur.service';
 import { UserBase } from '../../../forms/user-base/user-base';
 import { AdresseForm } from '../../adresseForm/adresse-form';
 import { Utilisateur } from '../user';
+import { Adresse } from '../../adresseForm/adresse-interface';
 
 @Component({
   selector: 'app-ajouter-utilisateur',
@@ -30,6 +31,7 @@ export class UtilisateursForm {
       prenom: string;
       nom: string;
       email: string;
+      roles: string[];
     } | null>(null, Validators.required),
 
     adresse: new FormControl<{
@@ -61,6 +63,7 @@ export class UtilisateursForm {
           prenom: data.prenom,
           nom: data.nom,
           email: data.email,
+          roles: data.roles,
         },
         adresse: {
           rue: data.rue,
@@ -85,13 +88,14 @@ export class UtilisateursForm {
     const formValue = this.utilisateurForm.value;
     if (!formValue.userBase || !formValue.adresse) return;
 
-    const { prenom, nom, email } = formValue.userBase;
+    const { prenom, nom, email, roles } = formValue.userBase;
     const { rue, ville, cp, pays } = formValue.adresse;
 
     const newUser: Partial<Utilisateur> = {
       prenom,
       nom,
       email,
+      roles,
       rue,
       ville,
       cp,

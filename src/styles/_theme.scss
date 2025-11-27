@@ -53,3 +53,52 @@ input {
   background-color: white;
   border: 2px solid var(--primary);
 }
+
+/* Style général pour tous les select */
+select {
+  appearance: none; /* enlève le style par défaut */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+/* Style quand il est focus */
+select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+  outline: none;
+}
+
+/* Style option */
+select option {
+  padding: 8px;
+  background: white;
+  color: #333;
+}
+
+/* Pour multi-select */
+select[multiple] {
+  height: auto;
+  min-height: 90px;
+}
+
+/* Options sélectionnées (visibles) */
+select[multiple] option:checked {
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* Hover option */
+select option:hover {
+  background-color: #e9ecef;
+}

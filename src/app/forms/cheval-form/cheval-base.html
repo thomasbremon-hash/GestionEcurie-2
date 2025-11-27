@@ -1,0 +1,17 @@
+<div [formGroup]="chevalBaseForm" (blur)="markTouched()" class="row g-3">
+  <div class="col-md-4">
+    <label class="form-label">Nom</label>
+    <input type="text" formControlName="nom" class="form-control" />
+    @if (getError('nom')) {
+    <div class="text-danger small">{{ getError('nom') }}</div>
+    }
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Date de naissance</label>
+    <input type="date" formControlName="dateNaissance" class="form-control" />
+    @if (getError('dateNaissance')) {
+    <div class="text-danger small">{{ getError('dateNaissance') }}</div>
+    }
+  </div>
+</div>
