@@ -63,10 +63,10 @@ export class EntreprisesForm {
           telephone: data.telephone,
         },
         adresse: {
-          rue: data.rue,
-          ville: data.ville,
-          cp: data.cp,
-          pays: data.pays,
+          rue: data.adresse?.rue,
+          ville: data.adresse?.ville,
+          cp: data.adresse?.cp,
+          pays: data.adresse?.pays,
         },
       });
     } catch (err) {
@@ -95,10 +95,12 @@ export class EntreprisesForm {
       siren,
       telephone,
       email,
-      rue,
-      ville,
-      cp,
-      pays,
+      adresse: {
+        rue,
+        ville,
+        cp,
+        pays,
+      },
     };
 
     const id = this.entrepriseId();

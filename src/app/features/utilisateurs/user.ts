@@ -7,10 +7,6 @@ export interface Utilisateur {
   displayName?: string;
   emailVerified?: boolean;
   email: string;
-  // rue: string;
-  // ville: string;
-  // cp: string;
-  // pays: string;
   dateNaissance: string;
   uid?: string;
   roles: string[];

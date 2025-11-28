@@ -107,10 +107,10 @@ export class EntreprisesDetails {
             telephone: e.telephone,
           },
           adresse: {
-            rue: e.rue,
-            ville: e.ville,
-            cp: e.cp,
-            pays: e.pays,
+            rue: e.adresse?.rue,
+            ville: e.adresse?.ville ?? '',
+            cp: e.adresse?.cp ?? '',
+            pays: e.adresse?.pays ?? '',
           },
         });
       } else {
@@ -139,10 +139,10 @@ export class EntreprisesDetails {
           telephone: data.telephone,
         },
         adresse: {
-          rue: data.rue,
-          ville: data.ville,
-          cp: data.cp,
-          pays: data.pays,
+          rue: data.adresse?.rue,
+          ville: data.adresse?.ville,
+          cp: data.adresse?.cp,
+          pays: data.adresse?.pays,
         },
       });
     } catch (err) {
@@ -171,10 +171,12 @@ export class EntreprisesDetails {
       siren,
       telephone,
       email,
-      rue,
-      ville,
-      cp,
-      pays,
+      adresse: {
+        rue,
+        ville,
+        cp,
+        pays,
+      },
     };
 
     const id = this.entrepriseId();

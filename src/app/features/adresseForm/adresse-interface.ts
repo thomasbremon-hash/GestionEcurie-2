@@ -1,5 +1,6 @@
 export interface Adresse {
-  adresse1: string;
+  rue: string;
   cp: string;
   ville: string;
+  pays: string;
 }
