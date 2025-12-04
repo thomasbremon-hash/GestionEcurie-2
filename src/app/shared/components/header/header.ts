@@ -1,38 +1,49 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { HeaderMenu } from '../header-menu/header-menu';
+import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../features/auth/auth.service';
 import { UtilisateurService } from '../../../features/utilisateurs/utilisateur.service';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink],
   templateUrl: './header.html',
-  styleUrl: './header.scss',
+  styleUrls: ['./header.scss'],
 })
 export class Header {
-
-   private auth = inject(AuthService);
+  private auth = inject(AuthService);
   private utilisateurService = inject(UtilisateurService);
 
-  userRoles = signal<string[]>([]);
+  utilisateurID = signal(null)
+
+  utilisateur = this.utilisateurService.utilisateur;
+
+  // userRoles: WritableSignal<string[]> = signal([]);
+ 
   isConnected = computed(() => !!this.auth.utilisateur());
 
   constructor() {
-    effect(async () => {
-      const fbUser = this.auth.utilisateur();
+    effect(() => {
+        console.log(this.auth.utilisateur()?.uid);
+        console.log(this.isConnected());
+        if(this.isConnected().valueOf()){
+          console.log("user connected");
+           console.log(this.utilisateurService.utilisateurID?.set(this.auth.utilisateur()!.uid ));
+          console.log(this.utilisateur())
+        }
 
-      if (!fbUser) {
-        this.userRoles.set([]);
-        return;
-      }
+        
 
-      const userData = await this.utilisateurService.getUser(fbUser.uid);
-      this.userRoles.set(userData?.roles ?? []);
+   
     });
   }
 
   hasRole(role: string) {
-    return this.userRoles().includes(role);
+    console.log(this.utilisateur()?.roles)
+   console.log(this.utilisateur()?.roles.includes(role));
+   return this.utilisateur()?.roles.includes(role)
+  }
+
+  logout() {
+    this.auth.logout();
   }
 }

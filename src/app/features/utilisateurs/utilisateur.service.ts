@@ -65,7 +65,7 @@ export class UtilisateurService {
     );
   } */
 
-  async getUser(id: string): Promise<Utilisateur> {
+  async getUser(id: string) {
     const document = doc(this.utilisateursRef, id);
     const docsnap = await getDoc(document);
 

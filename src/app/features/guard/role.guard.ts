@@ -1,35 +1,31 @@
-// src/app/guards/role.guard.ts
+// role.guard.ts
 import { inject } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { UtilisateurService } from '../utilisateurs/utilisateur.service';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { AuthService } from '../../features/auth/auth.service';
+import { UtilisateurService } from '../../features/utilisateurs/utilisateur.service';
 
-export const roleGuard = (roles: string[]): CanActivateFn => {
-  return async () => {
-    const auth = inject(AuthService);
-    const userService = inject(UtilisateurService);
-    const router = inject(Router);
+export const RoleGuard: CanActivateFn = async (route, state) => {
+  const auth = inject(AuthService);
+  const utilisateurService = inject(UtilisateurService);
+  const router = inject(Router);
 
-    const firebaseUser = auth.utilisateur();
-    if (!firebaseUser) {
-      router.navigate(['/login']);
-      return false;
-    }
+  const expectedRoles: string[] = route.data['roles'] ?? [];
 
-    const userData = await userService.getUser(firebaseUser.uid);
+  const fbUser = auth.utilisateur();
+  if (!fbUser) {
+    // Pas connecté -> redirection vers login
+    return router.parseUrl('/login');
+  }
 
-    if (!userData?.roles) {
-      router.navigate(['/']);
-      return false;
-    }
+  try {
+    // Récupération des rôles depuis Firestore
+    const userData = await utilisateurService.getUser(fbUser.uid);
+    const hasRole = userData.roles.some((role) => expectedRoles.includes(role));
 
-    const isAllowed = userData.roles.some((r: string) => roles.includes(r));
-
-    if (!isAllowed) {
-      router.navigate(['/']);
-      return false;
-    }
-
-    return true;
-  };
+    return hasRole ? true : router.parseUrl('/');
+  } catch (err) {
+    console.error('Erreur lors de la récupération des rôles', err);
+    console.log('test');
+    return router.parseUrl('/login');
+  }
 };

@@ -1,19 +1,33 @@
 <nav class="menu">
   <ul>
-    @if (isConnected()) {
-    <ng-container>
-      @if (hasRole('admin')) {
-      <li><a routerLink="/admin">Admin</a></li>
-      } @if (hasRole('gestionnaire') || hasRole('admin')) {
-      <li><a routerLink="/gestionnaire">Gestionnaire</a></li>
-      } @if (hasRole('client')) {
-      <li><a routerLink="/client">Client</a></li>
-      } @if (hasRole('comptabilite') || hasRole('admin')) {
-      <li><a routerLink="/comptabilite">Comptabilité</a></li>
-      }
-    </ng-container>
+   
+    @if(isConnected()){
+       <li>test {{utilisateur()?.email}}</li>
+       @if(hasRole('admin')){
+    <li><a routerLink="/admin">Admin</a></li>
+    } 
+    @if(hasRole('gestionnaire') || hasRole('admin')){
+    <li>
+      <a routerLink="/gestionnaire">Gestionnaire</a>
+    </li>
+    } 
+    @if (hasRole('client')) {
+    <li><a routerLink="/client">Client</a></li>
+    }
+    
+    @if (hasRole('comptabilite') || hasRole('admin')) {
+    <li>
+      <a routerLink="/comptabilite">Comptabilité</a>
+    </li>
+    }
+
+    <li><a (click)="logout()">Déconnexion</a></li>
+
     } @else {
     <li><a routerLink="/login">Connexion</a></li>
+    <li><a routerLink="/register">Inscription</a></li>
     }
+
+    <li><a (click)="logout()">Déconnexion</a></li>
   </ul>
 </nav>

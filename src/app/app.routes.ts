@@ -10,6 +10,8 @@ import { Home } from './home/home';
 import { Login } from '../app/features/auth/login/login';
 import { Register } from './features/auth/register/register';
 import { RegisterEmail } from './features/auth/register-email/register-email';
+import { AuthService } from './features/auth/auth.service';
+import { RoleGuard } from './features/guard/role.guard';
 // import { ListeCollaborateurs } from './pages/collaborateurs/liste-collaborateurs';
 // import { ListeClients } from './pages/client/liste-clients';
 // import { DashboardCompta } from './pages/comptabilite/dashboard-compta';
@@ -23,6 +25,8 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: async () => (await import('./features/sidebar/admin.routes/admin.routes')).routes,
+    canActivate: [RoleGuard],
+    data: { roles: ['admin'] },
   },
 
   {
