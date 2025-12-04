@@ -1,33 +1,24 @@
 <nav class="menu">
   <ul>
-   
-    @if(isConnected()){
-       <li>test {{utilisateur()?.email}}</li>
-       @if(hasRole('admin')){
-    <li><a routerLink="/admin">Admin</a></li>
-    } 
-    @if(hasRole('gestionnaire') || hasRole('admin')){
+    <li>{{ isConnected() }}</li>
+    <!-- Si connecté Firebase -->
+    @if(isConnected()) {
+    <!-- Affiche info Firestore si chargé -->
+
+    <li>Bonjour {{ utilisateur()?.prenom }} {{ utilisateur()?.nom }} {{ utilisateur()?.email }}</li>
+
+    <!-- Liens filtrés dynamiquement par rôle -->
+    @for(link of menuLinks(); track $index) {
     <li>
-      <a routerLink="/gestionnaire">Gestionnaire</a>
-    </li>
-    } 
-    @if (hasRole('client')) {
-    <li><a routerLink="/client">Client</a></li>
-    }
-    
-    @if (hasRole('comptabilite') || hasRole('admin')) {
-    <li>
-      <a routerLink="/comptabilite">Comptabilité</a>
+      <a [routerLink]="link.path" routerLinkActive="active-link">{{ link.name }}</a>
     </li>
     }
 
+    <!-- Déconnexion toujours visible -->
     <li><a (click)="logout()">Déconnexion</a></li>
-
     } @else {
     <li><a routerLink="/login">Connexion</a></li>
     <li><a routerLink="/register">Inscription</a></li>
     }
-
-    <li><a (click)="logout()">Déconnexion</a></li>
   </ul>
 </nav>

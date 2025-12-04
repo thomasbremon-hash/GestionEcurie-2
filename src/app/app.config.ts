@@ -32,6 +32,6 @@ export const appConfig: ApplicationConfig = {
 
     provideFirebaseApp(() => initializeAngularFireApp(firebaseConfig)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
+    provideFirestore(() => getFirestore("gestion-ecurie-1")),
   ],
 };

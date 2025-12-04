@@ -25,7 +25,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: async () => (await import('./features/sidebar/admin.routes/admin.routes')).routes,
-    canActivate: [RoleGuard],
+    /*canActivate: [RoleGuard],*/
     data: { roles: ['admin'] },
   },
 

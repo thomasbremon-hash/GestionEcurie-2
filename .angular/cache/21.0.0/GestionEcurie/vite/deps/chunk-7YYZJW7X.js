@@ -1,7 +1,6 @@
-import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
   pendingUntilEvent
-} from "./chunk-522TMUGB.js";
+} from "./chunk-MTZDI4YH.js";
 import {
   Inject,
   Injectable,
@@ -11,7 +10,7 @@ import {
   isDevMode,
   setClassMetadata,
   ɵɵdefineNgModule
-} from "./chunk-LDGULD25.js";
+} from "./chunk-76GSSSP2.js";
 import {
   EnvironmentInjector,
   InjectionToken,
@@ -22,39 +21,31 @@ import {
   Version,
   inject,
   makeEnvironmentProviders,
-  require_operators,
   runInInjectionContext,
   ɵɵdefineInjectable,
   ɵɵdefineInjector,
   ɵɵinject
-} from "./chunk-Y3FFDXC5.js";
+} from "./chunk-GOSSQBBE.js";
 import {
-  require_cjs
-} from "./chunk-IRZGY4YW.js";
+  Observable,
+  asyncScheduler,
+  concatMap,
+  distinct,
+  from,
+  observeOn,
+  queueScheduler,
+  subscribeOn,
+  timer
+} from "./chunk-JI2ZN7O6.js";
 import {
   __spreadProps,
-  __spreadValues,
-  __toESM
-} from "./chunk-6DU2HRTW.js";
+  __spreadValues
+} from "./chunk-GOMI4DH3.js";
 
-// ../../../node_modules/@firebase/util/dist/postinstall.mjs
+// node_modules/@firebase/util/dist/postinstall.mjs
 var getDefaultsFromPostinstall = () => void 0;
 
-// ../../../node_modules/@firebase/util/dist/node-esm/index.node.esm.js
-var CONSTANTS = {
-  /**
-   * @define {boolean} Whether this is the client Node.js SDK.
-   */
-  NODE_CLIENT: false,
-  /**
-   * @define {boolean} Whether this is the Admin Node.js SDK.
-   */
-  NODE_ADMIN: false,
-  /**
-   * Firebase SDK Version
-   */
-  SDK_VERSION: "${JSCORE_VERSION}"
-};
+// node_modules/@firebase/util/dist/index.esm2017.js
 var stringToByteArray$1 = function(str) {
   const out = [];
   let p = 0;
@@ -370,6 +361,10 @@ var getDefaultAppConfig = () => {
   var _a;
   return (_a = getDefaults()) === null || _a === void 0 ? void 0 : _a.config;
 };
+var getExperimentalSetting = (name3) => {
+  var _a;
+  return (_a = getDefaults()) === null || _a === void 0 ? void 0 : _a[`_${name3}`];
+};
 var Deferred = class {
   constructor() {
     this.reject = () => {
@@ -624,6 +619,10 @@ function isBrowserExtension() {
 function isReactNative() {
   return typeof navigator === "object" && navigator["product"] === "ReactNative";
 }
+function isIE() {
+  const ua = getUA();
+  return ua.indexOf("MSIE ") >= 0 || ua.indexOf("Trident/") >= 0;
+}
 function isSafari() {
   return !isNode() && !!navigator.userAgent && navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
 }
@@ -698,6 +697,14 @@ function replaceTemplate(template, data) {
   });
 }
 var PATTERN = /\{\$([^}]+)}/g;
+function isEmpty(obj) {
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      return false;
+    }
+  }
+  return true;
+}
 function deepEqual(a, b) {
   if (a === b) {
     return true;
@@ -921,9 +928,8 @@ function getModularInstance(service) {
     return service;
   }
 }
-CONSTANTS.NODE_CLIENT = true;
 
-// ../../../node_modules/@firebase/component/dist/esm/index.esm2017.js
+// node_modules/@firebase/component/dist/esm/index.esm2017.js
 var Component = class {
   /**
    *
@@ -1212,7 +1218,7 @@ var ComponentContainer = class {
   }
 };
 
-// ../../../node_modules/@firebase/logger/dist/esm/index.esm2017.js
+// node_modules/@firebase/logger/dist/esm/index.esm2017.js
 var instances = [];
 var LogLevel;
 (function(LogLevel3) {
@@ -1362,7 +1368,7 @@ function setUserLogHandler(logCallback, options) {
   }
 }
 
-// ../../../node_modules/idb/build/wrap-idb-value.js
+// node_modules/idb/build/wrap-idb-value.js
 var instanceOfAny = (object, constructors) => constructors.some((c) => object instanceof c);
 var idbProxyableTypes;
 var cursorAdvanceMethods;
@@ -1505,7 +1511,7 @@ function wrap(value) {
 }
 var unwrap = (value) => reverseTransformCache.get(value);
 
-// ../../../node_modules/idb/build/index.js
+// node_modules/idb/build/index.js
 function openDB(name3, version3, { blocked, upgrade, blocking, terminated } = {}) {
   const request = indexedDB.open(name3, version3);
   const openPromise = wrap(request);
@@ -1568,7 +1574,7 @@ replaceTraps((oldTraps) => __spreadProps(__spreadValues({}, oldTraps), {
   has: (target, prop) => !!getMethod(target, prop) || oldTraps.has(target, prop)
 }));
 
-// ../../../node_modules/@firebase/app/dist/esm/index.esm2017.js
+// node_modules/@firebase/app/dist/esm/index.esm2017.js
 var PlatformLoggerServiceImpl = class {
   constructor(container) {
     this.container = container;
@@ -2341,18 +2347,12 @@ function registerCoreComponents(variant) {
 }
 registerCoreComponents("");
 
-// ../../../node_modules/firebase/app/dist/index.mjs
+// node_modules/firebase/app/dist/esm/index.esm.js
 var name2 = "firebase";
 var version2 = "11.10.0";
 registerVersion(name2, version2, "app");
 
-// ../../../node_modules/@angular/fire/fesm2022/angular-fire-app.mjs
-var import_rxjs2 = __toESM(require_cjs(), 1);
-var import_operators2 = __toESM(require_operators(), 1);
-
-// ../../../node_modules/@angular/fire/fesm2022/angular-fire.mjs
-var import_rxjs = __toESM(require_cjs(), 1);
-var import_operators = __toESM(require_operators(), 1);
+// node_modules/@angular/fire/fesm2022/angular-fire.mjs
 var VERSION2 = new Version("ANGULARFIRE2_VERSION");
 function ɵgetDefaultInstanceOf(identifier, provided, defaultApp) {
   if (provided) {
@@ -2393,7 +2393,7 @@ var currentLogLevel = isDevMode() && typeof Zone !== "undefined" ? LogLevel2.WAR
 var ɵZoneScheduler = class {
   zone;
   delegate;
-  constructor(zone, delegate = import_rxjs.queueScheduler) {
+  constructor(zone, delegate = queueScheduler) {
     this.zone = zone;
     this.delegate = delegate;
   }
@@ -2420,7 +2420,7 @@ var ɵAngularFireSchedulers = class _ɵAngularFireSchedulers {
   constructor() {
     const ngZone = inject(NgZone);
     this.outsideAngular = ngZone.runOutsideAngular(() => new ɵZoneScheduler(typeof Zone === "undefined" ? void 0 : Zone.current));
-    this.insideAngular = ngZone.run(() => new ɵZoneScheduler(typeof Zone === "undefined" ? void 0 : Zone.current, import_rxjs.asyncScheduler));
+    this.insideAngular = ngZone.run(() => new ɵZoneScheduler(typeof Zone === "undefined" ? void 0 : Zone.current, asyncScheduler));
   }
   static ɵfac = function ɵAngularFireSchedulers_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _ɵAngularFireSchedulers)();
@@ -2501,14 +2501,14 @@ var ɵzoneWrap = (it, blockUntilFirst, logLevel) => {
     }
     const ret = runOutsideAngular(() => it.apply(this, _arguments));
     if (!blockUntilFirst) {
-      if (ret instanceof import_rxjs.Observable) {
-        return ret.pipe((0, import_operators.subscribeOn)(schedulers.outsideAngular), (0, import_operators.observeOn)(schedulers.insideAngular));
+      if (ret instanceof Observable) {
+        return ret.pipe(subscribeOn(schedulers.outsideAngular), observeOn(schedulers.insideAngular));
       } else {
         return run(() => ret);
       }
     }
-    if (ret instanceof import_rxjs.Observable) {
-      return ret.pipe((0, import_operators.subscribeOn)(schedulers.outsideAngular), (0, import_operators.observeOn)(schedulers.insideAngular), pendingUntilEvent(injector));
+    if (ret instanceof Observable) {
+      return ret.pipe(subscribeOn(schedulers.outsideAngular), observeOn(schedulers.insideAngular), pendingUntilEvent(injector));
     } else if (ret instanceof Promise) {
       return run(() => {
         const removeTask = pendingTasks.add();
@@ -2527,7 +2527,7 @@ var ɵzoneWrap = (it, blockUntilFirst, logLevel) => {
   };
 };
 
-// ../../../node_modules/@angular/fire/fesm2022/angular-fire-app.mjs
+// node_modules/@angular/fire/fesm2022/angular-fire-app.mjs
 var FirebaseApp = class {
   constructor(app) {
     return app;
@@ -2538,7 +2538,7 @@ var FirebaseApps = class {
     return getApps();
   }
 };
-var firebaseApp$ = (0, import_rxjs2.timer)(0, 300).pipe((0, import_operators2.concatMap)(() => (0, import_rxjs2.from)(getApps())), (0, import_operators2.distinct)());
+var firebaseApp$ = timer(0, 300).pipe(concatMap(() => from(getApps())), distinct());
 function defaultFirebaseAppFactory(provided) {
   if (provided && provided.length === 1) {
     return provided[0];
@@ -2619,6 +2619,7 @@ export {
   getGlobal,
   getDefaultEmulatorHost,
   getDefaultEmulatorHostnameAndPort,
+  getExperimentalSetting,
   Deferred,
   isCloudWorkstation,
   pingServer,
@@ -2629,11 +2630,13 @@ export {
   isCloudflareWorker,
   isBrowserExtension,
   isReactNative,
+  isIE,
   isSafari,
   isSafariOrWebkit,
   isIndexedDBAvailable,
   FirebaseError,
   ErrorFactory,
+  isEmpty,
   deepEqual,
   querystring,
   querystringDecode,
@@ -2677,4 +2680,4 @@ export {
   registerVersion2,
   setLogLevel3 as setLogLevel
 };
-//# sourceMappingURL=chunk-4WHY4MFL.js.map
+//# sourceMappingURL=chunk-7YYZJW7X.js.map

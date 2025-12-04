@@ -4,10 +4,12 @@ import { AuthService } from '../../auth/auth.service';
 import { UtilisateurService } from '../utilisateur.service';
 import { Utilisateur } from '../user';
 import { SessionService } from '../session.service';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-utilisateurs-liste',
-  imports: [],
+  imports: [MatPaginatorModule, MatButtonModule],
   templateUrl: './utilisateurs-liste.html',
   styleUrl: './utilisateurs-liste.scss',
 })

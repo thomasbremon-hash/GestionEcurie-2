@@ -1,5 +1,4 @@
-import { computed, inject, Injectable, resource, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { computed, effect, inject, Injectable, resource, signal } from '@angular/core';
 import {
   addDoc,
   collection,
@@ -8,27 +7,64 @@ import {
   Firestore,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   setDoc,
   where,
+  Unsubscribe,
 } from '@angular/fire/firestore';
 import { Utilisateur } from './user';
-import { from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilisateurService {
   firestore = inject(Firestore);
-
   colllectionName = 'utilisateur';
-
   utilisateursRef = collection(this.firestore, this.colllectionName);
 
   utilisateurs = signal<Utilisateur[]>([]);
   utilisateurID = signal<string | null>(null);
 
-  utilisateur = toSignal<Utilisateur>(from(this.getUser(this.utilisateurID()!)));
+  // 🔥 Signal qui contient l'utilisateur actuel
+  utilisateur = signal<Utilisateur | null>(null);
+
+  private unsubscribe: Unsubscribe | null = null;
+
+  constructor() {
+    // 🔥 Effect qui écoute les changements de utilisateurID
+    effect(() => {
+      const uid = this.utilisateurID();
+
+      // Nettoie l'ancienne souscription
+      if (this.unsubscribe) {
+        this.unsubscribe();
+        this.unsubscribe = null;
+      }
+
+      if (!uid) {
+        this.utilisateur.set(null);
+        return;
+      }
+
+      // 🔥 Écoute les changements en temps réel du document Firestore
+      const docRef = doc(this.utilisateursRef, uid);
+      this.unsubscribe = onSnapshot(
+        docRef,
+        (snapshot) => {
+          if (snapshot.exists()) {
+            this.utilisateur.set(this.DataToUser(snapshot.data()));
+          } else {
+            this.utilisateur.set(null);
+          }
+        },
+        (error) => {
+          console.error('❌ Erreur écoute utilisateur:', error);
+          this.utilisateur.set(null);
+        }
+      );
+    });
+  }
 
   usersResource = resource({
     loader: async (): Promise<Utilisateur[]> => {
@@ -45,29 +81,13 @@ export class UtilisateurService {
     return this.usersResource.hasValue() ? this.usersResource.value() : [];
   });
 
-  /* async fetchUtilisateurs() {
-    const utilisateurs = await getDocs(this.utilisateursRef);
-    this.utilisateurs.set(
-      utilisateurs.docs.map((c) => ({
-        ...c.data(),
-        _id: c.id,
-        prenom: c.data()['prenom'],
-        nom: c.data()['nom'],
-        email: c.data()['email'],
-        displayName: c.data()['displayName'],
-        rue: c.data()['rue'],
-        ville: c.data()['ville'],
-        cp: c.data()['cp'],
-        dateNaissance: c.data()['dateNaissance'],
-        uid: c.data()['uid'],
-        pays: c.data()['pays'],
-      }))
-    );
-  } */
-
-  async getUser(id: string) {
+  async getUser(id: string): Promise<Utilisateur> {
     const document = doc(this.utilisateursRef, id);
     const docsnap = await getDoc(document);
+
+    if (!docsnap.exists()) {
+      throw new Error(`Utilisateur ${id} non trouvé`);
+    }
 
     return this.DataToUser(docsnap.data()!);
   }
@@ -75,18 +95,6 @@ export class UtilisateurService {
   async addUser(newUser: Partial<Utilisateur>) {
     const docRef = await addDoc(this.utilisateursRef, newUser);
     await setDoc(docRef, { _id: docRef.id }, { merge: true });
-
-    /*
-    const document = doc(this.utilisateursRef, newUser._id);
-    console.log(document.id);
-    const docsnap = await getDoc(document);
-    if (docsnap.exists()) {
-      await setDoc(doc(this.utilisateursRef, newUser._id), newUser, { merge: true });
-    } else {
-      await setDoc(doc(this.utilisateursRef, newUser._id), newUser);
-    }
-
-  */
   }
 
   async updateUser(_id: string, newUser: Partial<Utilisateur>) {
@@ -100,28 +108,30 @@ export class UtilisateurService {
   }
 
   userExits = computed(async () => {
-    const document = doc(this.utilisateursRef, this.utilisateurID()!);
+    const uid = this.utilisateurID();
+    if (!uid) return false;
+
+    const document = doc(this.utilisateursRef, uid);
     const docsnap = await getDoc(document);
-    return docsnap.exists() ? true : false;
+    return docsnap.exists();
   });
 
   DataToUser(data: any): Utilisateur {
     return {
       _id: data._id,
-      prenom: data.prenom!,
-      nom: data.nom!,
-      displayName: data.displayName!,
-      email: data.email!,
+      prenom: data.prenom ?? '',
+      nom: data.nom ?? '',
+      displayName: data.displayName,
+      email: data.email ?? '',
       emailVerified: data.emailVerified,
-      adresse: {
-        rue: data.adresse?.rue ?? '',
-        cp: data.adresse?.cp ?? '',
-        ville: data.adresse?.ville ?? '',
-        pays: data.adresse?.pays ?? '',
+      adresse: data.adresse ?? {
+        rue: '',
+        cp: '',
+        ville: '',
+        pays: '',
       },
-      dateNaissance: data.dateNaissance!,
+      dateNaissance: data.dateNaissance ?? '',
       uid: data.uid,
-
       roles: data.roles ?? [],
     };
   }
@@ -133,6 +143,21 @@ export class UtilisateurService {
   }
 
   refreshUsers() {
-    this.usersResource.reload(); // recharge la resource
+    this.usersResource.reload();
+  }
+
+  async getUserByUidOrEmail(uid: string) {
+  
+    console.log('email', uid);
+    const q = query(this.utilisateursRef, where('uid', '==', uid));
+    console.log("q: ",  q);
+    const docsnap = (await getDocs(q)).forEach((doc)=> {
+      console.log("doc", doc.data())
+      this.utilisateur.set(this.DataToUser(doc.data())); 
+    })
+    
+   
+    
+   
   }
 }

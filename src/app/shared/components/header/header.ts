@@ -1,7 +1,14 @@
-import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, effect, inject, signal, Signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../features/auth/auth.service';
 import { UtilisateurService } from '../../../features/utilisateurs/utilisateur.service';
+import { Utilisateur } from '../../../features/utilisateurs/user';
+
+interface MenuLink {
+  path: string;
+  name: string;
+  roles: string[];
+}
 
 @Component({
   selector: 'app-header',
@@ -13,34 +20,50 @@ export class Header {
   private auth = inject(AuthService);
   private utilisateurService = inject(UtilisateurService);
 
-  utilisateurID = signal(null)
+  auser = this.auth.utilisateur ;
 
-  utilisateur = this.utilisateurService.utilisateur;
+ // user = this.utilisateurService.utilisateur;
 
-  // userRoles: WritableSignal<string[]> = signal([]);
- 
-  isConnected = computed(() => !!this.auth.utilisateur());
+  utilisateur  = this.utilisateurService.utilisateur;
+
+
+      
+  isConnected = computed(() => {
+    if(this.auth.isLoggedIn()){
+
+      console.log("je recherche l utilisateur connected ")
+     this.utilisateurService.getUserByUidOrEmail(this.auser()!.uid)  
+    }
+     
+    
+    
+    return !!this.auth.utilisateur()});
+//  isFirestoreReady = computed(() => !!this.utilisateur());
+utilisateurt = computed(() =>  { 
+  if(this.isConnected()){
+    console.log("je recherche l utilisateur ")
+     this.utilisateurService.getUserByUidOrEmail(this.auser()!.uid)  
+  }
+})
+
+  // Tous les liens possibles
+  allLinks: MenuLink[] = [
+    { path: '/admin', name: 'Admin', roles: ['admin'] },
+    { path: '/gestionnaire', name: 'Gestionnaire', roles: ['gestionnaire'] },
+    { path: '/client', name: 'Client', roles: ['client'] },
+    { path: '/collaborateur', name: 'Collaborateur', roles: ['collaborateur'] },
+    { path: '/comptabilite', name: 'Comptabilité', roles: ['comptabilite'] },
+  ];
+
+  // Computed pour filtrer les liens selon les rôles
+  menuLinks = computed(() => {
+    const user = this.utilisateur(); // ✅ Appel du signal
+    if (!this.isConnected()) return [];
+    return this.allLinks.filter((link) => link.roles.some((role) => user!.roles.includes(role)));
+  });
 
   constructor() {
-    effect(() => {
-        console.log(this.auth.utilisateur()?.uid);
-        console.log(this.isConnected());
-        if(this.isConnected().valueOf()){
-          console.log("user connected");
-           console.log(this.utilisateurService.utilisateurID?.set(this.auth.utilisateur()!.uid ));
-          console.log(this.utilisateur())
-        }
-
-        
-
-   
-    });
-  }
-
-  hasRole(role: string) {
-    console.log(this.utilisateur()?.roles)
-   console.log(this.utilisateur()?.roles.includes(role));
-   return this.utilisateur()?.roles.includes(role)
+ 
   }
 
   logout() {

@@ -1,4 +1,3 @@
-import { createRequire } from 'module';const require = createRequire(import.meta.url);
 import {
   Component,
   Deferred,
@@ -20,12 +19,15 @@ import {
   extractQuerystring,
   getApp,
   getDefaultEmulatorHost,
+  getExperimentalSetting,
   getGlobal,
   getModularInstance,
   getUA,
   isBrowserExtension,
   isCloudWorkstation,
   isCloudflareWorker,
+  isEmpty,
+  isIE,
   isIndexedDBAvailable,
   isMobileCordova,
   isReactNative,
@@ -38,38 +40,33 @@ import {
   ɵgetAllInstancesOf,
   ɵgetDefaultInstanceOf,
   ɵzoneWrap
-} from "./chunk-4WHY4MFL.js";
+} from "./chunk-7YYZJW7X.js";
 import {
   NgModule,
   Optional,
   PLATFORM_ID,
   setClassMetadata,
   ɵɵdefineNgModule
-} from "./chunk-LDGULD25.js";
+} from "./chunk-76GSSSP2.js";
 import {
   InjectionToken,
   Injector,
   NgZone,
   makeEnvironmentProviders,
-  require_operators,
   ɵɵdefineInjector
-} from "./chunk-Y3FFDXC5.js";
+} from "./chunk-GOSSQBBE.js";
 import {
-  require_cjs
-} from "./chunk-IRZGY4YW.js";
-import {
-  __toESM
-} from "./chunk-6DU2HRTW.js";
+  Observable,
+  __rest,
+  concatMap,
+  distinct,
+  from,
+  of,
+  switchMap,
+  timer
+} from "./chunk-JI2ZN7O6.js";
 
-// ../../../node_modules/@angular/fire/fesm2022/angular-fire-auth.mjs
-var import_rxjs3 = __toESM(require_cjs(), 1);
-var import_operators3 = __toESM(require_operators(), 1);
-
-// ../../../node_modules/@angular/fire/fesm2022/angular-fire-app-check.mjs
-var import_rxjs = __toESM(require_cjs(), 1);
-var import_operators = __toESM(require_operators(), 1);
-
-// ../../../node_modules/@firebase/app-check/dist/esm/index.esm2017.js
+// node_modules/@firebase/app-check/dist/esm/index.esm2017.js
 var APP_CHECK_STATES = /* @__PURE__ */ new Map();
 var DEFAULT_STATE = {
   activated: false,
@@ -815,7 +812,7 @@ function registerAppCheck() {
 }
 registerAppCheck();
 
-// ../../../node_modules/@angular/fire/fesm2022/angular-fire-app-check.mjs
+// node_modules/@angular/fire/fesm2022/angular-fire-app-check.mjs
 var APP_CHECK_PROVIDER_NAME = "app-check";
 var AppCheck = class {
   constructor(appCheck) {
@@ -827,7 +824,7 @@ var AppCheckInstances = class {
     return ɵgetAllInstancesOf(APP_CHECK_PROVIDER_NAME);
   }
 };
-var appCheckInstance$ = (0, import_rxjs.timer)(0, 300).pipe((0, import_operators.concatMap)(() => (0, import_rxjs.from)(ɵgetAllInstancesOf(APP_CHECK_PROVIDER_NAME))), (0, import_operators.distinct)());
+var appCheckInstance$ = timer(0, 300).pipe(concatMap(() => from(ɵgetAllInstancesOf(APP_CHECK_PROVIDER_NAME))), distinct());
 var PROVIDED_APP_CHECK_INSTANCES = new InjectionToken("angularfire2.app-check-instances");
 function defaultAppCheckInstanceFactory(provided, defaultApp) {
   const defaultAppCheck = ɵgetDefaultInstanceOf(APP_CHECK_PROVIDER_NAME, provided, defaultApp);
@@ -872,20 +869,7 @@ var initializeAppCheck2 = ɵzoneWrap(initializeAppCheck, true);
 var onTokenChanged2 = ɵzoneWrap(onTokenChanged, true);
 var setTokenAutoRefreshEnabled2 = ɵzoneWrap(setTokenAutoRefreshEnabled, true);
 
-// ../../../node_modules/tslib/tslib.es6.mjs
-function __rest(s, e) {
-  var t = {};
-  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-    t[p] = s[p];
-  if (s != null && typeof Object.getOwnPropertySymbols === "function")
-    for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-        t[p[i]] = s[p[i]];
-    }
-  return t;
-}
-
-// ../../../node_modules/@firebase/auth/dist/node-esm/totp-a9833fe5.js
+// node_modules/@firebase/auth/dist/esm2017/index-35c79a8a.js
 var FactorId = {
   /** Phone as second factor */
   PHONE: "phone",
@@ -1524,6 +1508,19 @@ function _errorWithCustomMessage(auth, code, message) {
 function _serverAppCurrentUserOperationNotSupportedError(auth) {
   return _errorWithCustomMessage(auth, "operation-not-supported-in-this-environment", "Operations that alter the current user are not supported in conjunction with FirebaseServerApp");
 }
+function _assertInstanceOf(auth, object, instance) {
+  const constructorInstance = instance;
+  if (!(object instanceof constructorInstance)) {
+    if (constructorInstance.name !== object.constructor.name) {
+      _fail(
+        auth,
+        "argument-error"
+        /* AuthErrorCode.ARGUMENT_ERROR */
+      );
+    }
+    throw _errorWithCustomMessage(auth, "argument-error", `Type of ${object.constructor.name} does not match expected instance.Did you pass a reference from a different Auth SDK?`);
+  }
+}
 function createErrorInternal(authOrCode, ...rest) {
   if (typeof authOrCode !== "string") {
     const code = rest[0];
@@ -2042,6 +2039,9 @@ function _makeTaggedError(auth, code, response) {
   error.customData._tokenResponse = response;
   return error;
 }
+function isV2(grecaptcha) {
+  return grecaptcha !== void 0 && grecaptcha.getResponse !== void 0;
+}
 function isEnterprise(grecaptcha) {
   return grecaptcha !== void 0 && grecaptcha.enterprise !== void 0;
 }
@@ -2097,6 +2097,14 @@ var RecaptchaConfig = class {
     );
   }
 };
+async function getRecaptchaParams(auth) {
+  return (await _performApiRequest(
+    auth,
+    "GET",
+    "/v1/recaptchaParams"
+    /* Endpoint.GET_RECAPTCHA_PARAM */
+  )).recaptchaSiteKey || "";
+}
 async function getRecaptchaConfig(auth, request) {
   return _performApiRequest(auth, "GET", "/v2/recaptchaConfig", _addTidIfNecessary(auth, request));
 }
@@ -2952,6 +2960,19 @@ function _isBlackBerry(ua = getUA()) {
 function _isWebOS(ua = getUA()) {
   return /webos/i.test(ua);
 }
+function _isIOS(ua = getUA()) {
+  return /iphone|ipad|ipod/i.test(ua) || /macintosh/i.test(ua) && /mobile/i.test(ua);
+}
+function _isIOSStandalone(ua = getUA()) {
+  var _a;
+  return _isIOS(ua) && !!((_a = window.navigator) === null || _a === void 0 ? void 0 : _a.standalone);
+}
+function _isIE10() {
+  return isIE() && document.documentMode === 10;
+}
+function _isMobileBrowser(ua = getUA()) {
+  return _isIOS(ua) || _isAndroid(ua) || _isWebOS(ua) || _isBlackBerry(ua) || /windows phone/i.test(ua) || _isIEMobile(ua);
+}
 function _getClientVersion(clientPlatform, frameworks = []) {
   let reportedPlatform;
   switch (clientPlatform) {
@@ -3689,12 +3710,57 @@ var externalJSProvider = {
   recaptchaEnterpriseScript: "",
   gapiScript: ""
 };
+function _setExternalJSProvider(p) {
+  externalJSProvider = p;
+}
 function _loadJS(url) {
   return externalJSProvider.loadJS(url);
+}
+function _recaptchaV2ScriptUrl() {
+  return externalJSProvider.recaptchaV2Script;
 }
 function _recaptchaEnterpriseScriptUrl() {
   return externalJSProvider.recaptchaEnterpriseScript;
 }
+function _gapiScriptUrl() {
+  return externalJSProvider.gapiScript;
+}
+function _generateCallbackName(prefix) {
+  return `__${prefix}${Math.floor(Math.random() * 1e6)}`;
+}
+var _SOLVE_TIME_MS = 500;
+var _EXPIRATION_TIME_MS = 6e4;
+var _WIDGET_ID_START = 1e12;
+var MockReCaptcha = class {
+  constructor(auth) {
+    this.auth = auth;
+    this.counter = _WIDGET_ID_START;
+    this._widgets = /* @__PURE__ */ new Map();
+  }
+  render(container, parameters) {
+    const id = this.counter;
+    this._widgets.set(id, new MockWidget(container, this.auth.name, parameters || {}));
+    this.counter++;
+    return id;
+  }
+  reset(optWidgetId) {
+    var _a;
+    const id = optWidgetId || _WIDGET_ID_START;
+    void ((_a = this._widgets.get(id)) === null || _a === void 0 ? void 0 : _a.delete());
+    this._widgets.delete(id);
+  }
+  getResponse(optWidgetId) {
+    var _a;
+    const id = optWidgetId || _WIDGET_ID_START;
+    return ((_a = this._widgets.get(id)) === null || _a === void 0 ? void 0 : _a.getResponse()) || "";
+  }
+  async execute(optWidgetId) {
+    var _a;
+    const id = optWidgetId || _WIDGET_ID_START;
+    void ((_a = this._widgets.get(id)) === null || _a === void 0 ? void 0 : _a.execute());
+    return "";
+  }
+};
 var MockGreCAPTCHATopLevel = class {
   constructor() {
     this.enterprise = new MockGreCAPTCHA();
@@ -3720,6 +3786,81 @@ var MockGreCAPTCHA = class {
     return "";
   }
 };
+var MockWidget = class {
+  constructor(containerOrId, appName, params) {
+    this.params = params;
+    this.timerId = null;
+    this.deleted = false;
+    this.responseToken = null;
+    this.clickHandler = () => {
+      this.execute();
+    };
+    const container = typeof containerOrId === "string" ? document.getElementById(containerOrId) : containerOrId;
+    _assert(container, "argument-error", { appName });
+    this.container = container;
+    this.isVisible = this.params.size !== "invisible";
+    if (this.isVisible) {
+      this.execute();
+    } else {
+      this.container.addEventListener("click", this.clickHandler);
+    }
+  }
+  getResponse() {
+    this.checkIfDeleted();
+    return this.responseToken;
+  }
+  delete() {
+    this.checkIfDeleted();
+    this.deleted = true;
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+    this.container.removeEventListener("click", this.clickHandler);
+  }
+  execute() {
+    this.checkIfDeleted();
+    if (this.timerId) {
+      return;
+    }
+    this.timerId = window.setTimeout(() => {
+      this.responseToken = generateRandomAlphaNumericString(50);
+      const { callback, "expired-callback": expiredCallback } = this.params;
+      if (callback) {
+        try {
+          callback(this.responseToken);
+        } catch (e) {
+        }
+      }
+      this.timerId = window.setTimeout(() => {
+        this.timerId = null;
+        this.responseToken = null;
+        if (expiredCallback) {
+          try {
+            expiredCallback();
+          } catch (e) {
+          }
+        }
+        if (this.isVisible) {
+          this.execute();
+        }
+      }, _EXPIRATION_TIME_MS);
+    }, _SOLVE_TIME_MS);
+  }
+  checkIfDeleted() {
+    if (this.deleted) {
+      throw new Error("reCAPTCHA mock was already deleted!");
+    }
+  }
+};
+function generateRandomAlphaNumericString(len) {
+  const chars = [];
+  const allowedChars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (let i = 0; i < len; i++) {
+    chars.push(allowedChars.charAt(Math.floor(Math.random() * allowedChars.length)));
+  }
+  return chars.join("");
+}
 var RECAPTCHA_ENTERPRISE_VERIFIER_TYPE = "recaptcha-enterprise";
 var FAKE_TOKEN = "NO_RECAPTCHA";
 var RecaptchaEnterpriseVerifier = class {
@@ -4389,6 +4530,9 @@ var OAuthCredential = class _OAuthCredential extends AuthCredential {
     return request;
   }
 };
+async function sendPhoneVerificationCode(auth, request) {
+  return _performApiRequest(auth, "POST", "/v1/accounts:sendVerificationCode", _addTidIfNecessary(auth, request));
+}
 async function signInWithPhoneNumber$1(auth, request) {
   return _performSignInRequest(auth, "POST", "/v1/accounts:signInWithPhoneNumber", _addTidIfNecessary(auth, request));
 }
@@ -5264,7 +5408,7 @@ async function unlink(user3, providerId) {
   await userInternal.auth._persistUserIfCurrent(userInternal);
   return userInternal;
 }
-async function _link(user3, credential, bypassAuthState = false) {
+async function _link$1(user3, credential, bypassAuthState = false) {
   const response = await _logoutIfInvalidated(user3, credential._linkToIdToken(user3.auth, await user3.getIdToken()), bypassAuthState);
   return UserCredentialImpl._forOperation(user3, "link", response);
 }
@@ -5332,7 +5476,7 @@ async function signInWithCredential(auth, credential) {
 async function linkWithCredential(user3, credential) {
   const userInternal = getModularInstance(user3);
   await _assertLinkedStatus(false, userInternal, credential.providerId);
-  return _link(userInternal, credential);
+  return _link$1(userInternal, credential);
 }
 async function reauthenticateWithCredential(user3, credential) {
   return _reauthenticate(getModularInstance(user3), credential);
@@ -5931,6 +6075,12 @@ function getMultiFactorResolver(auth, error) {
   );
   return MultiFactorResolverImpl._fromError(authModular, errorInternal);
 }
+function startEnrollPhoneMfa(auth, request) {
+  return _performApiRequest(auth, "POST", "/v2/accounts/mfaEnrollment:start", _addTidIfNecessary(auth, request));
+}
+function finalizeEnrollPhoneMfa(auth, request) {
+  return _performApiRequest(auth, "POST", "/v2/accounts/mfaEnrollment:finalize", _addTidIfNecessary(auth, request));
+}
 function startEnrollTotpMfa(auth, request) {
   return _performApiRequest(auth, "POST", "/v2/accounts/mfaEnrollment:start", _addTidIfNecessary(auth, request));
 }
@@ -5987,188 +6137,2440 @@ function multiFactor(user3) {
   }
   return multiFactorUserCache.get(userModular);
 }
-var name2 = "@firebase/auth";
-var version2 = "1.10.8";
-var AuthInterop = class {
-  constructor(auth) {
-    this.auth = auth;
-    this.internalListeners = /* @__PURE__ */ new Map();
+var STORAGE_AVAILABLE_KEY = "__sak";
+var BrowserPersistenceClass = class {
+  constructor(storageRetriever, type) {
+    this.storageRetriever = storageRetriever;
+    this.type = type;
   }
-  getUid() {
-    var _a;
-    this.assertAuthConfigured();
-    return ((_a = this.auth.currentUser) === null || _a === void 0 ? void 0 : _a.uid) || null;
-  }
-  async getToken(forceRefresh) {
-    this.assertAuthConfigured();
-    await this.auth._initializationPromise;
-    if (!this.auth.currentUser) {
-      return null;
+  _isAvailable() {
+    try {
+      if (!this.storage) {
+        return Promise.resolve(false);
+      }
+      this.storage.setItem(STORAGE_AVAILABLE_KEY, "1");
+      this.storage.removeItem(STORAGE_AVAILABLE_KEY);
+      return Promise.resolve(true);
+    } catch (_a) {
+      return Promise.resolve(false);
     }
-    const accessToken = await this.auth.currentUser.getIdToken(forceRefresh);
-    return { accessToken };
   }
-  addAuthTokenListener(listener) {
-    this.assertAuthConfigured();
-    if (this.internalListeners.has(listener)) {
+  _set(key, value) {
+    this.storage.setItem(key, JSON.stringify(value));
+    return Promise.resolve();
+  }
+  _get(key) {
+    const json = this.storage.getItem(key);
+    return Promise.resolve(json ? JSON.parse(json) : null);
+  }
+  _remove(key) {
+    this.storage.removeItem(key);
+    return Promise.resolve();
+  }
+  get storage() {
+    return this.storageRetriever();
+  }
+};
+var _POLLING_INTERVAL_MS$1 = 1e3;
+var IE10_LOCAL_STORAGE_SYNC_DELAY = 10;
+var BrowserLocalPersistence = class extends BrowserPersistenceClass {
+  constructor() {
+    super(
+      () => window.localStorage,
+      "LOCAL"
+      /* PersistenceType.LOCAL */
+    );
+    this.boundEventHandler = (event, poll) => this.onStorageEvent(event, poll);
+    this.listeners = {};
+    this.localCache = {};
+    this.pollTimer = null;
+    this.fallbackToPolling = _isMobileBrowser();
+    this._shouldAllowMigration = true;
+  }
+  forAllChangedKeys(cb) {
+    for (const key of Object.keys(this.listeners)) {
+      const newValue = this.storage.getItem(key);
+      const oldValue = this.localCache[key];
+      if (newValue !== oldValue) {
+        cb(key, oldValue, newValue);
+      }
+    }
+  }
+  onStorageEvent(event, poll = false) {
+    if (!event.key) {
+      this.forAllChangedKeys((key2, _oldValue, newValue) => {
+        this.notifyListeners(key2, newValue);
+      });
       return;
     }
-    const unsubscribe = this.auth.onIdTokenChanged((user3) => {
-      listener((user3 === null || user3 === void 0 ? void 0 : user3.stsTokenManager.accessToken) || null);
-    });
-    this.internalListeners.set(listener, unsubscribe);
-    this.updateProactiveRefresh();
+    const key = event.key;
+    if (poll) {
+      this.detachListener();
+    } else {
+      this.stopPolling();
+    }
+    const triggerListeners = () => {
+      const storedValue2 = this.storage.getItem(key);
+      if (!poll && this.localCache[key] === storedValue2) {
+        return;
+      }
+      this.notifyListeners(key, storedValue2);
+    };
+    const storedValue = this.storage.getItem(key);
+    if (_isIE10() && storedValue !== event.newValue && event.newValue !== event.oldValue) {
+      setTimeout(triggerListeners, IE10_LOCAL_STORAGE_SYNC_DELAY);
+    } else {
+      triggerListeners();
+    }
   }
-  removeAuthTokenListener(listener) {
-    this.assertAuthConfigured();
-    const unsubscribe = this.internalListeners.get(listener);
+  notifyListeners(key, value) {
+    this.localCache[key] = value;
+    const listeners = this.listeners[key];
+    if (listeners) {
+      for (const listener of Array.from(listeners)) {
+        listener(value ? JSON.parse(value) : value);
+      }
+    }
+  }
+  startPolling() {
+    this.stopPolling();
+    this.pollTimer = setInterval(() => {
+      this.forAllChangedKeys((key, oldValue, newValue) => {
+        this.onStorageEvent(
+          new StorageEvent("storage", {
+            key,
+            oldValue,
+            newValue
+          }),
+          /* poll */
+          true
+        );
+      });
+    }, _POLLING_INTERVAL_MS$1);
+  }
+  stopPolling() {
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
+  }
+  attachListener() {
+    window.addEventListener("storage", this.boundEventHandler);
+  }
+  detachListener() {
+    window.removeEventListener("storage", this.boundEventHandler);
+  }
+  _addListener(key, listener) {
+    if (Object.keys(this.listeners).length === 0) {
+      if (this.fallbackToPolling) {
+        this.startPolling();
+      } else {
+        this.attachListener();
+      }
+    }
+    if (!this.listeners[key]) {
+      this.listeners[key] = /* @__PURE__ */ new Set();
+      this.localCache[key] = this.storage.getItem(key);
+    }
+    this.listeners[key].add(listener);
+  }
+  _removeListener(key, listener) {
+    if (this.listeners[key]) {
+      this.listeners[key].delete(listener);
+      if (this.listeners[key].size === 0) {
+        delete this.listeners[key];
+      }
+    }
+    if (Object.keys(this.listeners).length === 0) {
+      this.detachListener();
+      this.stopPolling();
+    }
+  }
+  // Update local cache on base operations:
+  async _set(key, value) {
+    await super._set(key, value);
+    this.localCache[key] = JSON.stringify(value);
+  }
+  async _get(key) {
+    const value = await super._get(key);
+    this.localCache[key] = JSON.stringify(value);
+    return value;
+  }
+  async _remove(key) {
+    await super._remove(key);
+    delete this.localCache[key];
+  }
+};
+BrowserLocalPersistence.type = "LOCAL";
+var browserLocalPersistence = BrowserLocalPersistence;
+var POLLING_INTERVAL_MS = 1e3;
+function getDocumentCookie(name3) {
+  var _a, _b;
+  const escapedName = name3.replace(/[\\^$.*+?()[\]{}|]/g, "\\$&");
+  const matcher = RegExp(`${escapedName}=([^;]+)`);
+  return (_b = (_a = document.cookie.match(matcher)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : null;
+}
+function getCookieName(key) {
+  const isDevMode2 = window.location.protocol === "http:";
+  return `${isDevMode2 ? "__dev_" : "__HOST-"}FIREBASE_${key.split(":")[3]}`;
+}
+var CookiePersistence = class {
+  constructor() {
+    this.type = "COOKIE";
+    this.listenerUnsubscribes = /* @__PURE__ */ new Map();
+  }
+  // used to get the URL to the backend to proxy to
+  _getFinalTarget(originalUrl) {
+    if (typeof window === void 0) {
+      return originalUrl;
+    }
+    const url = new URL(`${window.location.origin}/__cookies__`);
+    url.searchParams.set("finalTarget", originalUrl);
+    return url;
+  }
+  // To be a usable persistence method in a chain browserCookiePersistence ensures that
+  // prerequisites have been met, namely that we're in a secureContext, navigator and document are
+  // available and cookies are enabled. Not all UAs support these method, so fallback accordingly.
+  async _isAvailable() {
+    var _a;
+    if (typeof isSecureContext === "boolean" && !isSecureContext) {
+      return false;
+    }
+    if (typeof navigator === "undefined" || typeof document === "undefined") {
+      return false;
+    }
+    return (_a = navigator.cookieEnabled) !== null && _a !== void 0 ? _a : true;
+  }
+  // Set should be a noop as we expect middleware to handle this
+  async _set(_key, _value) {
+    return;
+  }
+  // Attempt to get the cookie from cookieStore, fallback to document.cookie
+  async _get(key) {
+    if (!this._isAvailable()) {
+      return null;
+    }
+    const name3 = getCookieName(key);
+    if (window.cookieStore) {
+      const cookie = await window.cookieStore.get(name3);
+      return cookie === null || cookie === void 0 ? void 0 : cookie.value;
+    }
+    return getDocumentCookie(name3);
+  }
+  // Log out by overriding the idToken with a sentinel value of ""
+  async _remove(key) {
+    if (!this._isAvailable()) {
+      return;
+    }
+    const existingValue = await this._get(key);
+    if (!existingValue) {
+      return;
+    }
+    const name3 = getCookieName(key);
+    document.cookie = `${name3}=;Max-Age=34560000;Partitioned;Secure;SameSite=Strict;Path=/;Priority=High`;
+    await fetch(`/__cookies__`, { method: "DELETE" }).catch(() => void 0);
+  }
+  // Listen for cookie changes, both cookieStore and fallback to polling document.cookie
+  _addListener(key, listener) {
+    if (!this._isAvailable()) {
+      return;
+    }
+    const name3 = getCookieName(key);
+    if (window.cookieStore) {
+      const cb = ((event) => {
+        const changedCookie = event.changed.find((change) => change.name === name3);
+        if (changedCookie) {
+          listener(changedCookie.value);
+        }
+        const deletedCookie = event.deleted.find((change) => change.name === name3);
+        if (deletedCookie) {
+          listener(null);
+        }
+      });
+      const unsubscribe2 = () => window.cookieStore.removeEventListener("change", cb);
+      this.listenerUnsubscribes.set(listener, unsubscribe2);
+      return window.cookieStore.addEventListener("change", cb);
+    }
+    let lastValue = getDocumentCookie(name3);
+    const interval = setInterval(() => {
+      const currentValue = getDocumentCookie(name3);
+      if (currentValue !== lastValue) {
+        listener(currentValue);
+        lastValue = currentValue;
+      }
+    }, POLLING_INTERVAL_MS);
+    const unsubscribe = () => clearInterval(interval);
+    this.listenerUnsubscribes.set(listener, unsubscribe);
+  }
+  _removeListener(_key, listener) {
+    const unsubscribe = this.listenerUnsubscribes.get(listener);
     if (!unsubscribe) {
       return;
     }
-    this.internalListeners.delete(listener);
     unsubscribe();
-    this.updateProactiveRefresh();
+    this.listenerUnsubscribes.delete(listener);
   }
-  assertAuthConfigured() {
-    _assert(
-      this.auth._initializationPromise,
-      "dependent-sdk-initialized-before-auth"
-      /* AuthErrorCode.DEPENDENT_SDK_INIT_BEFORE_AUTH */
+};
+CookiePersistence.type = "COOKIE";
+var browserCookiePersistence = CookiePersistence;
+var BrowserSessionPersistence = class extends BrowserPersistenceClass {
+  constructor() {
+    super(
+      () => window.sessionStorage,
+      "SESSION"
+      /* PersistenceType.SESSION */
     );
   }
-  updateProactiveRefresh() {
-    if (this.internalListeners.size > 0) {
-      this.auth._startProactiveRefresh();
-    } else {
-      this.auth._stopProactiveRefresh();
+  _addListener(_key, _listener) {
+    return;
+  }
+  _removeListener(_key, _listener) {
+    return;
+  }
+};
+BrowserSessionPersistence.type = "SESSION";
+var browserSessionPersistence = BrowserSessionPersistence;
+function _allSettled(promises) {
+  return Promise.all(promises.map(async (promise) => {
+    try {
+      const value = await promise;
+      return {
+        fulfilled: true,
+        value
+      };
+    } catch (reason) {
+      return {
+        fulfilled: false,
+        reason
+      };
+    }
+  }));
+}
+var Receiver = class _Receiver {
+  constructor(eventTarget) {
+    this.eventTarget = eventTarget;
+    this.handlersMap = {};
+    this.boundEventHandler = this.handleEvent.bind(this);
+  }
+  /**
+   * Obtain an instance of a Receiver for a given event target, if none exists it will be created.
+   *
+   * @param eventTarget - An event target (such as window or self) through which the underlying
+   * messages will be received.
+   */
+  static _getInstance(eventTarget) {
+    const existingInstance = this.receivers.find((receiver) => receiver.isListeningto(eventTarget));
+    if (existingInstance) {
+      return existingInstance;
+    }
+    const newInstance = new _Receiver(eventTarget);
+    this.receivers.push(newInstance);
+    return newInstance;
+  }
+  isListeningto(eventTarget) {
+    return this.eventTarget === eventTarget;
+  }
+  /**
+   * Fans out a MessageEvent to the appropriate listeners.
+   *
+   * @remarks
+   * Sends an {@link Status.ACK} upon receipt and a {@link Status.DONE} once all handlers have
+   * finished processing.
+   *
+   * @param event - The MessageEvent.
+   *
+   */
+  async handleEvent(event) {
+    const messageEvent = event;
+    const { eventId, eventType, data } = messageEvent.data;
+    const handlers = this.handlersMap[eventType];
+    if (!(handlers === null || handlers === void 0 ? void 0 : handlers.size)) {
+      return;
+    }
+    messageEvent.ports[0].postMessage({
+      status: "ack",
+      eventId,
+      eventType
+    });
+    const promises = Array.from(handlers).map(async (handler) => handler(messageEvent.origin, data));
+    const response = await _allSettled(promises);
+    messageEvent.ports[0].postMessage({
+      status: "done",
+      eventId,
+      eventType,
+      response
+    });
+  }
+  /**
+   * Subscribe an event handler for a particular event.
+   *
+   * @param eventType - Event name to subscribe to.
+   * @param eventHandler - The event handler which should receive the events.
+   *
+   */
+  _subscribe(eventType, eventHandler) {
+    if (Object.keys(this.handlersMap).length === 0) {
+      this.eventTarget.addEventListener("message", this.boundEventHandler);
+    }
+    if (!this.handlersMap[eventType]) {
+      this.handlersMap[eventType] = /* @__PURE__ */ new Set();
+    }
+    this.handlersMap[eventType].add(eventHandler);
+  }
+  /**
+   * Unsubscribe an event handler from a particular event.
+   *
+   * @param eventType - Event name to unsubscribe from.
+   * @param eventHandler - Optional event handler, if none provided, unsubscribe all handlers on this event.
+   *
+   */
+  _unsubscribe(eventType, eventHandler) {
+    if (this.handlersMap[eventType] && eventHandler) {
+      this.handlersMap[eventType].delete(eventHandler);
+    }
+    if (!eventHandler || this.handlersMap[eventType].size === 0) {
+      delete this.handlersMap[eventType];
+    }
+    if (Object.keys(this.handlersMap).length === 0) {
+      this.eventTarget.removeEventListener("message", this.boundEventHandler);
     }
   }
 };
-function getVersionForPlatform(clientPlatform) {
-  switch (clientPlatform) {
-    case "Node":
-      return "node";
-    case "ReactNative":
-      return "rn";
-    case "Worker":
-      return "webworker";
-    case "Cordova":
-      return "cordova";
-    case "WebExtension":
-      return "web-extension";
-    default:
-      return void 0;
+Receiver.receivers = [];
+function _generateEventId(prefix = "", digits = 10) {
+  let random = "";
+  for (let i = 0; i < digits; i++) {
+    random += Math.floor(Math.random() * 10);
   }
+  return prefix + random;
 }
-function registerAuth(clientPlatform) {
-  _registerComponent(new Component(
-    "auth",
-    (container, { options: deps }) => {
-      const app = container.getProvider("app").getImmediate();
-      const heartbeatServiceProvider = container.getProvider("heartbeat");
-      const appCheckServiceProvider = container.getProvider("app-check-internal");
-      const { apiKey, authDomain } = app.options;
-      _assert(apiKey && !apiKey.includes(":"), "invalid-api-key", { appName: app.name });
-      const config = {
-        apiKey,
-        authDomain,
-        clientPlatform,
-        apiHost: "identitytoolkit.googleapis.com",
-        tokenApiHost: "securetoken.googleapis.com",
-        apiScheme: "https",
-        sdkClientVersion: _getClientVersion(clientPlatform)
+var Sender = class {
+  constructor(target) {
+    this.target = target;
+    this.handlers = /* @__PURE__ */ new Set();
+  }
+  /**
+   * Unsubscribe the handler and remove it from our tracking Set.
+   *
+   * @param handler - The handler to unsubscribe.
+   */
+  removeMessageHandler(handler) {
+    if (handler.messageChannel) {
+      handler.messageChannel.port1.removeEventListener("message", handler.onMessage);
+      handler.messageChannel.port1.close();
+    }
+    this.handlers.delete(handler);
+  }
+  /**
+   * Send a message to the Receiver located at {@link target}.
+   *
+   * @remarks
+   * We'll first wait a bit for an ACK , if we get one we will wait significantly longer until the
+   * receiver has had a chance to fully process the event.
+   *
+   * @param eventType - Type of event to send.
+   * @param data - The payload of the event.
+   * @param timeout - Timeout for waiting on an ACK from the receiver.
+   *
+   * @returns An array of settled promises from all the handlers that were listening on the receiver.
+   */
+  async _send(eventType, data, timeout = 50) {
+    const messageChannel = typeof MessageChannel !== "undefined" ? new MessageChannel() : null;
+    if (!messageChannel) {
+      throw new Error(
+        "connection_unavailable"
+        /* _MessageError.CONNECTION_UNAVAILABLE */
+      );
+    }
+    let completionTimer;
+    let handler;
+    return new Promise((resolve, reject) => {
+      const eventId = _generateEventId("", 20);
+      messageChannel.port1.start();
+      const ackTimer = setTimeout(() => {
+        reject(new Error(
+          "unsupported_event"
+          /* _MessageError.UNSUPPORTED_EVENT */
+        ));
+      }, timeout);
+      handler = {
+        messageChannel,
+        onMessage(event) {
+          const messageEvent = event;
+          if (messageEvent.data.eventId !== eventId) {
+            return;
+          }
+          switch (messageEvent.data.status) {
+            case "ack":
+              clearTimeout(ackTimer);
+              completionTimer = setTimeout(
+                () => {
+                  reject(new Error(
+                    "timeout"
+                    /* _MessageError.TIMEOUT */
+                  ));
+                },
+                3e3
+                /* _TimeoutDuration.COMPLETION */
+              );
+              break;
+            case "done":
+              clearTimeout(completionTimer);
+              resolve(messageEvent.data.response);
+              break;
+            default:
+              clearTimeout(ackTimer);
+              clearTimeout(completionTimer);
+              reject(new Error(
+                "invalid_response"
+                /* _MessageError.INVALID_RESPONSE */
+              ));
+              break;
+          }
+        }
       };
-      const authInstance = new AuthImpl(app, heartbeatServiceProvider, appCheckServiceProvider, config);
-      _initializeAuthInstance(authInstance, deps);
-      return authInstance;
-    },
-    "PUBLIC"
-    /* ComponentType.PUBLIC */
-  ).setInstantiationMode(
-    "EXPLICIT"
-    /* InstantiationMode.EXPLICIT */
-  ).setInstanceCreatedCallback((container, _instanceIdentifier, _instance) => {
-    const authInternalProvider = container.getProvider(
-      "auth-internal"
-      /* _ComponentName.AUTH_INTERNAL */
-    );
-    authInternalProvider.initialize();
-  }));
-  _registerComponent(new Component(
-    "auth-internal",
-    (container) => {
-      const auth = _castAuth(container.getProvider(
-        "auth"
-        /* _ComponentName.AUTH */
-      ).getImmediate());
-      return ((auth2) => new AuthInterop(auth2))(auth);
-    },
-    "PRIVATE"
-    /* ComponentType.PRIVATE */
-  ).setInstantiationMode(
-    "EXPLICIT"
-    /* InstantiationMode.EXPLICIT */
-  ));
-  registerVersion(name2, version2, getVersionForPlatform(clientPlatform));
-  registerVersion(name2, version2, "esm2017");
-}
-FetchProvider.initialize(fetch, Headers, Response);
-function getAuth(app = getApp()) {
-  const provider = _getProvider(app, "auth");
-  if (provider.isInitialized()) {
-    return provider.getImmediate();
+      this.handlers.add(handler);
+      messageChannel.port1.addEventListener("message", handler.onMessage);
+      this.target.postMessage({
+        eventType,
+        eventId,
+        data
+      }, [messageChannel.port2]);
+    }).finally(() => {
+      if (handler) {
+        this.removeMessageHandler(handler);
+      }
+    });
   }
-  const auth = initializeAuth(app);
-  const authEmulatorHost = getDefaultEmulatorHost("auth");
-  if (authEmulatorHost) {
-    connectAuthEmulator(auth, `http://${authEmulatorHost}`);
+};
+function _window() {
+  return window;
+}
+function _setWindowLocation(url) {
+  _window().location.href = url;
+}
+function _isWorker() {
+  return typeof _window()["WorkerGlobalScope"] !== "undefined" && typeof _window()["importScripts"] === "function";
+}
+async function _getActiveServiceWorker() {
+  if (!(navigator === null || navigator === void 0 ? void 0 : navigator.serviceWorker)) {
+    return null;
   }
-  return auth;
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    return registration.active;
+  } catch (_a) {
+    return null;
+  }
 }
-registerAuth(
-  "Node"
-  /* ClientPlatform.NODE */
-);
-var NOT_AVAILABLE_ERROR = _createError(
-  "operation-not-supported-in-this-environment"
-  /* AuthErrorCode.OPERATION_NOT_SUPPORTED */
-);
-async function fail() {
-  throw NOT_AVAILABLE_ERROR;
+function _getServiceWorkerController() {
+  var _a;
+  return ((_a = navigator === null || navigator === void 0 ? void 0 : navigator.serviceWorker) === null || _a === void 0 ? void 0 : _a.controller) || null;
 }
-var FailClass = class {
+function _getWorkerGlobalScope() {
+  return _isWorker() ? self : null;
+}
+var DB_NAME2 = "firebaseLocalStorageDb";
+var DB_VERSION2 = 1;
+var DB_OBJECTSTORE_NAME = "firebaseLocalStorage";
+var DB_DATA_KEYPATH = "fbase_key";
+var DBPromise = class {
+  constructor(request) {
+    this.request = request;
+  }
+  toPromise() {
+    return new Promise((resolve, reject) => {
+      this.request.addEventListener("success", () => {
+        resolve(this.request.result);
+      });
+      this.request.addEventListener("error", () => {
+        reject(this.request.error);
+      });
+    });
+  }
+};
+function getObjectStore(db, isReadWrite) {
+  return db.transaction([DB_OBJECTSTORE_NAME], isReadWrite ? "readwrite" : "readonly").objectStore(DB_OBJECTSTORE_NAME);
+}
+function _deleteDatabase() {
+  const request = indexedDB.deleteDatabase(DB_NAME2);
+  return new DBPromise(request).toPromise();
+}
+function _openDatabase() {
+  const request = indexedDB.open(DB_NAME2, DB_VERSION2);
+  return new Promise((resolve, reject) => {
+    request.addEventListener("error", () => {
+      reject(request.error);
+    });
+    request.addEventListener("upgradeneeded", () => {
+      const db = request.result;
+      try {
+        db.createObjectStore(DB_OBJECTSTORE_NAME, { keyPath: DB_DATA_KEYPATH });
+      } catch (e) {
+        reject(e);
+      }
+    });
+    request.addEventListener("success", async () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(DB_OBJECTSTORE_NAME)) {
+        db.close();
+        await _deleteDatabase();
+        resolve(await _openDatabase());
+      } else {
+        resolve(db);
+      }
+    });
+  });
+}
+async function _putObject(db, key, value) {
+  const request = getObjectStore(db, true).put({
+    [DB_DATA_KEYPATH]: key,
+    value
+  });
+  return new DBPromise(request).toPromise();
+}
+async function getObject(db, key) {
+  const request = getObjectStore(db, false).get(key);
+  const data = await new DBPromise(request).toPromise();
+  return data === void 0 ? null : data.value;
+}
+function _deleteObject(db, key) {
+  const request = getObjectStore(db, true).delete(key);
+  return new DBPromise(request).toPromise();
+}
+var _POLLING_INTERVAL_MS = 800;
+var _TRANSACTION_RETRY_COUNT = 3;
+var IndexedDBLocalPersistence = class {
   constructor() {
-    throw NOT_AVAILABLE_ERROR;
+    this.type = "LOCAL";
+    this._shouldAllowMigration = true;
+    this.listeners = {};
+    this.localCache = {};
+    this.pollTimer = null;
+    this.pendingWrites = 0;
+    this.receiver = null;
+    this.sender = null;
+    this.serviceWorkerReceiverAvailable = false;
+    this.activeServiceWorker = null;
+    this._workerInitializationPromise = this.initializeServiceWorkerMessaging().then(() => {
+    }, () => {
+    });
+  }
+  async _openDb() {
+    if (this.db) {
+      return this.db;
+    }
+    this.db = await _openDatabase();
+    return this.db;
+  }
+  async _withRetries(op) {
+    let numAttempts = 0;
+    while (true) {
+      try {
+        const db = await this._openDb();
+        return await op(db);
+      } catch (e) {
+        if (numAttempts++ > _TRANSACTION_RETRY_COUNT) {
+          throw e;
+        }
+        if (this.db) {
+          this.db.close();
+          this.db = void 0;
+        }
+      }
+    }
+  }
+  /**
+   * IndexedDB events do not propagate from the main window to the worker context.  We rely on a
+   * postMessage interface to send these events to the worker ourselves.
+   */
+  async initializeServiceWorkerMessaging() {
+    return _isWorker() ? this.initializeReceiver() : this.initializeSender();
+  }
+  /**
+   * As the worker we should listen to events from the main window.
+   */
+  async initializeReceiver() {
+    this.receiver = Receiver._getInstance(_getWorkerGlobalScope());
+    this.receiver._subscribe("keyChanged", async (_origin, data) => {
+      const keys = await this._poll();
+      return {
+        keyProcessed: keys.includes(data.key)
+      };
+    });
+    this.receiver._subscribe("ping", async (_origin, _data) => {
+      return [
+        "keyChanged"
+        /* _EventType.KEY_CHANGED */
+      ];
+    });
+  }
+  /**
+   * As the main window, we should let the worker know when keys change (set and remove).
+   *
+   * @remarks
+   * {@link https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/ready | ServiceWorkerContainer.ready}
+   * may not resolve.
+   */
+  async initializeSender() {
+    var _a, _b;
+    this.activeServiceWorker = await _getActiveServiceWorker();
+    if (!this.activeServiceWorker) {
+      return;
+    }
+    this.sender = new Sender(this.activeServiceWorker);
+    const results = await this.sender._send(
+      "ping",
+      {},
+      800
+      /* _TimeoutDuration.LONG_ACK */
+    );
+    if (!results) {
+      return;
+    }
+    if (((_a = results[0]) === null || _a === void 0 ? void 0 : _a.fulfilled) && ((_b = results[0]) === null || _b === void 0 ? void 0 : _b.value.includes(
+      "keyChanged"
+      /* _EventType.KEY_CHANGED */
+    ))) {
+      this.serviceWorkerReceiverAvailable = true;
+    }
+  }
+  /**
+   * Let the worker know about a changed key, the exact key doesn't technically matter since the
+   * worker will just trigger a full sync anyway.
+   *
+   * @remarks
+   * For now, we only support one service worker per page.
+   *
+   * @param key - Storage key which changed.
+   */
+  async notifyServiceWorker(key) {
+    if (!this.sender || !this.activeServiceWorker || _getServiceWorkerController() !== this.activeServiceWorker) {
+      return;
+    }
+    try {
+      await this.sender._send(
+        "keyChanged",
+        { key },
+        // Use long timeout if receiver has previously responded to a ping from us.
+        this.serviceWorkerReceiverAvailable ? 800 : 50
+        /* _TimeoutDuration.ACK */
+      );
+    } catch (_a) {
+    }
+  }
+  async _isAvailable() {
+    try {
+      if (!indexedDB) {
+        return false;
+      }
+      const db = await _openDatabase();
+      await _putObject(db, STORAGE_AVAILABLE_KEY, "1");
+      await _deleteObject(db, STORAGE_AVAILABLE_KEY);
+      return true;
+    } catch (_a) {
+    }
+    return false;
+  }
+  async _withPendingWrite(write2) {
+    this.pendingWrites++;
+    try {
+      await write2();
+    } finally {
+      this.pendingWrites--;
+    }
+  }
+  async _set(key, value) {
+    return this._withPendingWrite(async () => {
+      await this._withRetries((db) => _putObject(db, key, value));
+      this.localCache[key] = value;
+      return this.notifyServiceWorker(key);
+    });
+  }
+  async _get(key) {
+    const obj = await this._withRetries((db) => getObject(db, key));
+    this.localCache[key] = obj;
+    return obj;
+  }
+  async _remove(key) {
+    return this._withPendingWrite(async () => {
+      await this._withRetries((db) => _deleteObject(db, key));
+      delete this.localCache[key];
+      return this.notifyServiceWorker(key);
+    });
+  }
+  async _poll() {
+    const result = await this._withRetries((db) => {
+      const getAllRequest = getObjectStore(db, false).getAll();
+      return new DBPromise(getAllRequest).toPromise();
+    });
+    if (!result) {
+      return [];
+    }
+    if (this.pendingWrites !== 0) {
+      return [];
+    }
+    const keys = [];
+    const keysInResult = /* @__PURE__ */ new Set();
+    if (result.length !== 0) {
+      for (const { fbase_key: key, value } of result) {
+        keysInResult.add(key);
+        if (JSON.stringify(this.localCache[key]) !== JSON.stringify(value)) {
+          this.notifyListeners(key, value);
+          keys.push(key);
+        }
+      }
+    }
+    for (const localKey of Object.keys(this.localCache)) {
+      if (this.localCache[localKey] && !keysInResult.has(localKey)) {
+        this.notifyListeners(localKey, null);
+        keys.push(localKey);
+      }
+    }
+    return keys;
+  }
+  notifyListeners(key, newValue) {
+    this.localCache[key] = newValue;
+    const listeners = this.listeners[key];
+    if (listeners) {
+      for (const listener of Array.from(listeners)) {
+        listener(newValue);
+      }
+    }
+  }
+  startPolling() {
+    this.stopPolling();
+    this.pollTimer = setInterval(async () => this._poll(), _POLLING_INTERVAL_MS);
+  }
+  stopPolling() {
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
+  }
+  _addListener(key, listener) {
+    if (Object.keys(this.listeners).length === 0) {
+      this.startPolling();
+    }
+    if (!this.listeners[key]) {
+      this.listeners[key] = /* @__PURE__ */ new Set();
+      void this._get(key);
+    }
+    this.listeners[key].add(listener);
+  }
+  _removeListener(key, listener) {
+    if (this.listeners[key]) {
+      this.listeners[key].delete(listener);
+      if (this.listeners[key].size === 0) {
+        delete this.listeners[key];
+      }
+    }
+    if (Object.keys(this.listeners).length === 0) {
+      this.stopPolling();
+    }
   }
 };
-var browserLocalPersistence = inMemoryPersistence;
-var browserSessionPersistence = inMemoryPersistence;
-var browserCookiePersistence = inMemoryPersistence;
-var indexedDBLocalPersistence = inMemoryPersistence;
-var browserPopupRedirectResolver = NOT_AVAILABLE_ERROR;
-var PhoneAuthProvider = FailClass;
-var signInWithPhoneNumber = fail;
-var linkWithPhoneNumber = fail;
-var reauthenticateWithPhoneNumber = fail;
-var updatePhoneNumber = fail;
-var signInWithPopup = fail;
-var linkWithPopup = fail;
-var reauthenticateWithPopup = fail;
-var signInWithRedirect = fail;
-var linkWithRedirect = fail;
-var reauthenticateWithRedirect = fail;
-var getRedirectResult = fail;
-var RecaptchaVerifier = FailClass;
-var PhoneMultiFactorGenerator = class {
-  static assertion() {
-    throw NOT_AVAILABLE_ERROR;
-  }
-};
-AuthImpl.prototype.setPersistence = async () => {
-};
+IndexedDBLocalPersistence.type = "LOCAL";
+var indexedDBLocalPersistence = IndexedDBLocalPersistence;
+function startSignInPhoneMfa(auth, request) {
+  return _performApiRequest(auth, "POST", "/v2/accounts/mfaSignIn:start", _addTidIfNecessary(auth, request));
+}
+function finalizeSignInPhoneMfa(auth, request) {
+  return _performApiRequest(auth, "POST", "/v2/accounts/mfaSignIn:finalize", _addTidIfNecessary(auth, request));
+}
 function finalizeSignInTotpMfa(auth, request) {
   return _performApiRequest(auth, "POST", "/v2/accounts/mfaSignIn:finalize", _addTidIfNecessary(auth, request));
 }
+var _JSLOAD_CALLBACK = _generateCallbackName("rcb");
+var NETWORK_TIMEOUT_DELAY = new Delay(3e4, 6e4);
+var ReCaptchaLoaderImpl = class {
+  constructor() {
+    var _a;
+    this.hostLanguage = "";
+    this.counter = 0;
+    this.librarySeparatelyLoaded = !!((_a = _window().grecaptcha) === null || _a === void 0 ? void 0 : _a.render);
+  }
+  load(auth, hl = "") {
+    _assert(
+      isHostLanguageValid(hl),
+      auth,
+      "argument-error"
+      /* AuthErrorCode.ARGUMENT_ERROR */
+    );
+    if (this.shouldResolveImmediately(hl) && isV2(_window().grecaptcha)) {
+      return Promise.resolve(_window().grecaptcha);
+    }
+    return new Promise((resolve, reject) => {
+      const networkTimeout = _window().setTimeout(() => {
+        reject(_createError(
+          auth,
+          "network-request-failed"
+          /* AuthErrorCode.NETWORK_REQUEST_FAILED */
+        ));
+      }, NETWORK_TIMEOUT_DELAY.get());
+      _window()[_JSLOAD_CALLBACK] = () => {
+        _window().clearTimeout(networkTimeout);
+        delete _window()[_JSLOAD_CALLBACK];
+        const recaptcha = _window().grecaptcha;
+        if (!recaptcha || !isV2(recaptcha)) {
+          reject(_createError(
+            auth,
+            "internal-error"
+            /* AuthErrorCode.INTERNAL_ERROR */
+          ));
+          return;
+        }
+        const render = recaptcha.render;
+        recaptcha.render = (container, params) => {
+          const widgetId = render(container, params);
+          this.counter++;
+          return widgetId;
+        };
+        this.hostLanguage = hl;
+        resolve(recaptcha);
+      };
+      const url = `${_recaptchaV2ScriptUrl()}?${querystring({
+        onload: _JSLOAD_CALLBACK,
+        render: "explicit",
+        hl
+      })}`;
+      _loadJS(url).catch(() => {
+        clearTimeout(networkTimeout);
+        reject(_createError(
+          auth,
+          "internal-error"
+          /* AuthErrorCode.INTERNAL_ERROR */
+        ));
+      });
+    });
+  }
+  clearedOneInstance() {
+    this.counter--;
+  }
+  shouldResolveImmediately(hl) {
+    var _a;
+    return !!((_a = _window().grecaptcha) === null || _a === void 0 ? void 0 : _a.render) && (hl === this.hostLanguage || this.counter > 0 || this.librarySeparatelyLoaded);
+  }
+};
+function isHostLanguageValid(hl) {
+  return hl.length <= 6 && /^\s*[a-zA-Z0-9\-]*\s*$/.test(hl);
+}
+var MockReCaptchaLoaderImpl = class {
+  async load(auth) {
+    return new MockReCaptcha(auth);
+  }
+  clearedOneInstance() {
+  }
+};
+var RECAPTCHA_VERIFIER_TYPE = "recaptcha";
+var DEFAULT_PARAMS = {
+  theme: "light",
+  type: "image"
+};
+var RecaptchaVerifier = class {
+  /**
+   * @param authExtern - The corresponding Firebase {@link Auth} instance.
+   *
+   * @param containerOrId - The reCAPTCHA container parameter.
+   *
+   * @remarks
+   * This has different meaning depending on whether the reCAPTCHA is hidden or visible. For a
+   * visible reCAPTCHA the container must be empty. If a string is used, it has to correspond to
+   * an element ID. The corresponding element must also must be in the DOM at the time of
+   * initialization.
+   *
+   * @param parameters - The optional reCAPTCHA parameters.
+   *
+   * @remarks
+   * Check the reCAPTCHA docs for a comprehensive list. All parameters are accepted except for
+   * the sitekey. Firebase Auth backend provisions a reCAPTCHA for each project and will
+   * configure this upon rendering. For an invisible reCAPTCHA, a size key must have the value
+   * 'invisible'.
+   */
+  constructor(authExtern, containerOrId, parameters = Object.assign({}, DEFAULT_PARAMS)) {
+    this.parameters = parameters;
+    this.type = RECAPTCHA_VERIFIER_TYPE;
+    this.destroyed = false;
+    this.widgetId = null;
+    this.tokenChangeListeners = /* @__PURE__ */ new Set();
+    this.renderPromise = null;
+    this.recaptcha = null;
+    this.auth = _castAuth(authExtern);
+    this.isInvisible = this.parameters.size === "invisible";
+    _assert(
+      typeof document !== "undefined",
+      this.auth,
+      "operation-not-supported-in-this-environment"
+      /* AuthErrorCode.OPERATION_NOT_SUPPORTED */
+    );
+    const container = typeof containerOrId === "string" ? document.getElementById(containerOrId) : containerOrId;
+    _assert(
+      container,
+      this.auth,
+      "argument-error"
+      /* AuthErrorCode.ARGUMENT_ERROR */
+    );
+    this.container = container;
+    this.parameters.callback = this.makeTokenCallback(this.parameters.callback);
+    this._recaptchaLoader = this.auth.settings.appVerificationDisabledForTesting ? new MockReCaptchaLoaderImpl() : new ReCaptchaLoaderImpl();
+    this.validateStartingState();
+  }
+  /**
+   * Waits for the user to solve the reCAPTCHA and resolves with the reCAPTCHA token.
+   *
+   * @returns A Promise for the reCAPTCHA token.
+   */
+  async verify() {
+    this.assertNotDestroyed();
+    const id = await this.render();
+    const recaptcha = this.getAssertedRecaptcha();
+    const response = recaptcha.getResponse(id);
+    if (response) {
+      return response;
+    }
+    return new Promise((resolve) => {
+      const tokenChange = (token) => {
+        if (!token) {
+          return;
+        }
+        this.tokenChangeListeners.delete(tokenChange);
+        resolve(token);
+      };
+      this.tokenChangeListeners.add(tokenChange);
+      if (this.isInvisible) {
+        recaptcha.execute(id);
+      }
+    });
+  }
+  /**
+   * Renders the reCAPTCHA widget on the page.
+   *
+   * @returns A Promise that resolves with the reCAPTCHA widget ID.
+   */
+  render() {
+    try {
+      this.assertNotDestroyed();
+    } catch (e) {
+      return Promise.reject(e);
+    }
+    if (this.renderPromise) {
+      return this.renderPromise;
+    }
+    this.renderPromise = this.makeRenderPromise().catch((e) => {
+      this.renderPromise = null;
+      throw e;
+    });
+    return this.renderPromise;
+  }
+  /** @internal */
+  _reset() {
+    this.assertNotDestroyed();
+    if (this.widgetId !== null) {
+      this.getAssertedRecaptcha().reset(this.widgetId);
+    }
+  }
+  /**
+   * Clears the reCAPTCHA widget from the page and destroys the instance.
+   */
+  clear() {
+    this.assertNotDestroyed();
+    this.destroyed = true;
+    this._recaptchaLoader.clearedOneInstance();
+    if (!this.isInvisible) {
+      this.container.childNodes.forEach((node) => {
+        this.container.removeChild(node);
+      });
+    }
+  }
+  validateStartingState() {
+    _assert(
+      !this.parameters.sitekey,
+      this.auth,
+      "argument-error"
+      /* AuthErrorCode.ARGUMENT_ERROR */
+    );
+    _assert(
+      this.isInvisible || !this.container.hasChildNodes(),
+      this.auth,
+      "argument-error"
+      /* AuthErrorCode.ARGUMENT_ERROR */
+    );
+    _assert(
+      typeof document !== "undefined",
+      this.auth,
+      "operation-not-supported-in-this-environment"
+      /* AuthErrorCode.OPERATION_NOT_SUPPORTED */
+    );
+  }
+  makeTokenCallback(existing) {
+    return (token) => {
+      this.tokenChangeListeners.forEach((listener) => listener(token));
+      if (typeof existing === "function") {
+        existing(token);
+      } else if (typeof existing === "string") {
+        const globalFunc = _window()[existing];
+        if (typeof globalFunc === "function") {
+          globalFunc(token);
+        }
+      }
+    };
+  }
+  assertNotDestroyed() {
+    _assert(
+      !this.destroyed,
+      this.auth,
+      "internal-error"
+      /* AuthErrorCode.INTERNAL_ERROR */
+    );
+  }
+  async makeRenderPromise() {
+    await this.init();
+    if (!this.widgetId) {
+      let container = this.container;
+      if (!this.isInvisible) {
+        const guaranteedEmpty = document.createElement("div");
+        container.appendChild(guaranteedEmpty);
+        container = guaranteedEmpty;
+      }
+      this.widgetId = this.getAssertedRecaptcha().render(container, this.parameters);
+    }
+    return this.widgetId;
+  }
+  async init() {
+    _assert(
+      _isHttpOrHttps() && !_isWorker(),
+      this.auth,
+      "internal-error"
+      /* AuthErrorCode.INTERNAL_ERROR */
+    );
+    await domReady();
+    this.recaptcha = await this._recaptchaLoader.load(this.auth, this.auth.languageCode || void 0);
+    const siteKey = await getRecaptchaParams(this.auth);
+    _assert(
+      siteKey,
+      this.auth,
+      "internal-error"
+      /* AuthErrorCode.INTERNAL_ERROR */
+    );
+    this.parameters.sitekey = siteKey;
+  }
+  getAssertedRecaptcha() {
+    _assert(
+      this.recaptcha,
+      this.auth,
+      "internal-error"
+      /* AuthErrorCode.INTERNAL_ERROR */
+    );
+    return this.recaptcha;
+  }
+};
+function domReady() {
+  let resolver = null;
+  return new Promise((resolve) => {
+    if (document.readyState === "complete") {
+      resolve();
+      return;
+    }
+    resolver = () => resolve();
+    window.addEventListener("load", resolver);
+  }).catch((e) => {
+    if (resolver) {
+      window.removeEventListener("load", resolver);
+    }
+    throw e;
+  });
+}
+var ConfirmationResultImpl = class {
+  constructor(verificationId, onConfirmation) {
+    this.verificationId = verificationId;
+    this.onConfirmation = onConfirmation;
+  }
+  confirm(verificationCode) {
+    const authCredential = PhoneAuthCredential._fromVerification(this.verificationId, verificationCode);
+    return this.onConfirmation(authCredential);
+  }
+};
+async function signInWithPhoneNumber(auth, phoneNumber, appVerifier) {
+  if (_isFirebaseServerApp(auth.app)) {
+    return Promise.reject(_serverAppCurrentUserOperationNotSupportedError(auth));
+  }
+  const authInternal = _castAuth(auth);
+  const verificationId = await _verifyPhoneNumber(authInternal, phoneNumber, getModularInstance(appVerifier));
+  return new ConfirmationResultImpl(verificationId, (cred) => signInWithCredential(authInternal, cred));
+}
+async function linkWithPhoneNumber(user3, phoneNumber, appVerifier) {
+  const userInternal = getModularInstance(user3);
+  await _assertLinkedStatus(
+    false,
+    userInternal,
+    "phone"
+    /* ProviderId.PHONE */
+  );
+  const verificationId = await _verifyPhoneNumber(userInternal.auth, phoneNumber, getModularInstance(appVerifier));
+  return new ConfirmationResultImpl(verificationId, (cred) => linkWithCredential(userInternal, cred));
+}
+async function reauthenticateWithPhoneNumber(user3, phoneNumber, appVerifier) {
+  const userInternal = getModularInstance(user3);
+  if (_isFirebaseServerApp(userInternal.auth.app)) {
+    return Promise.reject(_serverAppCurrentUserOperationNotSupportedError(userInternal.auth));
+  }
+  const verificationId = await _verifyPhoneNumber(userInternal.auth, phoneNumber, getModularInstance(appVerifier));
+  return new ConfirmationResultImpl(verificationId, (cred) => reauthenticateWithCredential(userInternal, cred));
+}
+async function _verifyPhoneNumber(auth, options, verifier) {
+  var _a;
+  if (!auth._getRecaptchaConfig()) {
+    try {
+      await _initializeRecaptchaConfig(auth);
+    } catch (error) {
+      console.log("Failed to initialize reCAPTCHA Enterprise config. Triggering the reCAPTCHA v2 verification.");
+    }
+  }
+  try {
+    let phoneInfoOptions;
+    if (typeof options === "string") {
+      phoneInfoOptions = {
+        phoneNumber: options
+      };
+    } else {
+      phoneInfoOptions = options;
+    }
+    if ("session" in phoneInfoOptions) {
+      const session = phoneInfoOptions.session;
+      if ("phoneNumber" in phoneInfoOptions) {
+        _assert(
+          session.type === "enroll",
+          auth,
+          "internal-error"
+          /* AuthErrorCode.INTERNAL_ERROR */
+        );
+        const startPhoneMfaEnrollmentRequest = {
+          idToken: session.credential,
+          phoneEnrollmentInfo: {
+            phoneNumber: phoneInfoOptions.phoneNumber,
+            clientType: "CLIENT_TYPE_WEB"
+            /* RecaptchaClientType.WEB */
+          }
+        };
+        const startEnrollPhoneMfaActionCallback = async (authInstance, request) => {
+          if (request.phoneEnrollmentInfo.captchaResponse === FAKE_TOKEN) {
+            _assert(
+              (verifier === null || verifier === void 0 ? void 0 : verifier.type) === RECAPTCHA_VERIFIER_TYPE,
+              authInstance,
+              "argument-error"
+              /* AuthErrorCode.ARGUMENT_ERROR */
+            );
+            const requestWithRecaptchaV2 = await injectRecaptchaV2Token(authInstance, request, verifier);
+            return startEnrollPhoneMfa(authInstance, requestWithRecaptchaV2);
+          }
+          return startEnrollPhoneMfa(authInstance, request);
+        };
+        const startPhoneMfaEnrollmentResponse = handleRecaptchaFlow(
+          auth,
+          startPhoneMfaEnrollmentRequest,
+          "mfaSmsEnrollment",
+          startEnrollPhoneMfaActionCallback,
+          "PHONE_PROVIDER"
+          /* RecaptchaAuthProvider.PHONE_PROVIDER */
+        );
+        const response = await startPhoneMfaEnrollmentResponse.catch((error) => {
+          return Promise.reject(error);
+        });
+        return response.phoneSessionInfo.sessionInfo;
+      } else {
+        _assert(
+          session.type === "signin",
+          auth,
+          "internal-error"
+          /* AuthErrorCode.INTERNAL_ERROR */
+        );
+        const mfaEnrollmentId = ((_a = phoneInfoOptions.multiFactorHint) === null || _a === void 0 ? void 0 : _a.uid) || phoneInfoOptions.multiFactorUid;
+        _assert(
+          mfaEnrollmentId,
+          auth,
+          "missing-multi-factor-info"
+          /* AuthErrorCode.MISSING_MFA_INFO */
+        );
+        const startPhoneMfaSignInRequest = {
+          mfaPendingCredential: session.credential,
+          mfaEnrollmentId,
+          phoneSignInInfo: {
+            clientType: "CLIENT_TYPE_WEB"
+            /* RecaptchaClientType.WEB */
+          }
+        };
+        const startSignInPhoneMfaActionCallback = async (authInstance, request) => {
+          if (request.phoneSignInInfo.captchaResponse === FAKE_TOKEN) {
+            _assert(
+              (verifier === null || verifier === void 0 ? void 0 : verifier.type) === RECAPTCHA_VERIFIER_TYPE,
+              authInstance,
+              "argument-error"
+              /* AuthErrorCode.ARGUMENT_ERROR */
+            );
+            const requestWithRecaptchaV2 = await injectRecaptchaV2Token(authInstance, request, verifier);
+            return startSignInPhoneMfa(authInstance, requestWithRecaptchaV2);
+          }
+          return startSignInPhoneMfa(authInstance, request);
+        };
+        const startPhoneMfaSignInResponse = handleRecaptchaFlow(
+          auth,
+          startPhoneMfaSignInRequest,
+          "mfaSmsSignIn",
+          startSignInPhoneMfaActionCallback,
+          "PHONE_PROVIDER"
+          /* RecaptchaAuthProvider.PHONE_PROVIDER */
+        );
+        const response = await startPhoneMfaSignInResponse.catch((error) => {
+          return Promise.reject(error);
+        });
+        return response.phoneResponseInfo.sessionInfo;
+      }
+    } else {
+      const sendPhoneVerificationCodeRequest = {
+        phoneNumber: phoneInfoOptions.phoneNumber,
+        clientType: "CLIENT_TYPE_WEB"
+        /* RecaptchaClientType.WEB */
+      };
+      const sendPhoneVerificationCodeActionCallback = async (authInstance, request) => {
+        if (request.captchaResponse === FAKE_TOKEN) {
+          _assert(
+            (verifier === null || verifier === void 0 ? void 0 : verifier.type) === RECAPTCHA_VERIFIER_TYPE,
+            authInstance,
+            "argument-error"
+            /* AuthErrorCode.ARGUMENT_ERROR */
+          );
+          const requestWithRecaptchaV2 = await injectRecaptchaV2Token(authInstance, request, verifier);
+          return sendPhoneVerificationCode(authInstance, requestWithRecaptchaV2);
+        }
+        return sendPhoneVerificationCode(authInstance, request);
+      };
+      const sendPhoneVerificationCodeResponse = handleRecaptchaFlow(
+        auth,
+        sendPhoneVerificationCodeRequest,
+        "sendVerificationCode",
+        sendPhoneVerificationCodeActionCallback,
+        "PHONE_PROVIDER"
+        /* RecaptchaAuthProvider.PHONE_PROVIDER */
+      );
+      const response = await sendPhoneVerificationCodeResponse.catch((error) => {
+        return Promise.reject(error);
+      });
+      return response.sessionInfo;
+    }
+  } finally {
+    verifier === null || verifier === void 0 ? void 0 : verifier._reset();
+  }
+}
+async function updatePhoneNumber(user3, credential) {
+  const userInternal = getModularInstance(user3);
+  if (_isFirebaseServerApp(userInternal.auth.app)) {
+    return Promise.reject(_serverAppCurrentUserOperationNotSupportedError(userInternal.auth));
+  }
+  await _link$1(userInternal, credential);
+}
+async function injectRecaptchaV2Token(auth, request, recaptchaV2Verifier) {
+  _assert(
+    recaptchaV2Verifier.type === RECAPTCHA_VERIFIER_TYPE,
+    auth,
+    "argument-error"
+    /* AuthErrorCode.ARGUMENT_ERROR */
+  );
+  const recaptchaV2Token = await recaptchaV2Verifier.verify();
+  _assert(
+    typeof recaptchaV2Token === "string",
+    auth,
+    "argument-error"
+    /* AuthErrorCode.ARGUMENT_ERROR */
+  );
+  const newRequest = Object.assign({}, request);
+  if ("phoneEnrollmentInfo" in newRequest) {
+    const phoneNumber = newRequest.phoneEnrollmentInfo.phoneNumber;
+    const captchaResponse = newRequest.phoneEnrollmentInfo.captchaResponse;
+    const clientType = newRequest.phoneEnrollmentInfo.clientType;
+    const recaptchaVersion = newRequest.phoneEnrollmentInfo.recaptchaVersion;
+    Object.assign(newRequest, {
+      "phoneEnrollmentInfo": {
+        phoneNumber,
+        recaptchaToken: recaptchaV2Token,
+        captchaResponse,
+        clientType,
+        recaptchaVersion
+      }
+    });
+    return newRequest;
+  } else if ("phoneSignInInfo" in newRequest) {
+    const captchaResponse = newRequest.phoneSignInInfo.captchaResponse;
+    const clientType = newRequest.phoneSignInInfo.clientType;
+    const recaptchaVersion = newRequest.phoneSignInInfo.recaptchaVersion;
+    Object.assign(newRequest, {
+      "phoneSignInInfo": {
+        recaptchaToken: recaptchaV2Token,
+        captchaResponse,
+        clientType,
+        recaptchaVersion
+      }
+    });
+    return newRequest;
+  } else {
+    Object.assign(newRequest, { "recaptchaToken": recaptchaV2Token });
+    return newRequest;
+  }
+}
+var PhoneAuthProvider = class _PhoneAuthProvider {
+  /**
+   * @param auth - The Firebase {@link Auth} instance in which sign-ins should occur.
+   *
+   */
+  constructor(auth) {
+    this.providerId = _PhoneAuthProvider.PROVIDER_ID;
+    this.auth = _castAuth(auth);
+  }
+  /**
+   *
+   * Starts a phone number authentication flow by sending a verification code to the given phone
+   * number.
+   *
+   * @example
+   * ```javascript
+   * const provider = new PhoneAuthProvider(auth);
+   * const verificationId = await provider.verifyPhoneNumber(phoneNumber, applicationVerifier);
+   * // Obtain verificationCode from the user.
+   * const authCredential = PhoneAuthProvider.credential(verificationId, verificationCode);
+   * const userCredential = await signInWithCredential(auth, authCredential);
+   * ```
+   *
+   * @example
+   * An alternative flow is provided using the `signInWithPhoneNumber` method.
+   * ```javascript
+   * const confirmationResult = signInWithPhoneNumber(auth, phoneNumber, applicationVerifier);
+   * // Obtain verificationCode from the user.
+   * const userCredential = confirmationResult.confirm(verificationCode);
+   * ```
+   *
+   * @param phoneInfoOptions - The user's {@link PhoneInfoOptions}. The phone number should be in
+   * E.164 format (e.g. +16505550101).
+   * @param applicationVerifier - An {@link ApplicationVerifier}, which prevents
+   * requests from unauthorized clients. This SDK includes an implementation
+   * based on reCAPTCHA v2, {@link RecaptchaVerifier}. If you've enabled
+   * reCAPTCHA Enterprise bot protection in Enforce mode, this parameter is
+   * optional; in all other configurations, the parameter is required.
+   *
+   * @returns A Promise for a verification ID that can be passed to
+   * {@link PhoneAuthProvider.credential} to identify this flow.
+   */
+  verifyPhoneNumber(phoneOptions, applicationVerifier) {
+    return _verifyPhoneNumber(this.auth, phoneOptions, getModularInstance(applicationVerifier));
+  }
+  /**
+   * Creates a phone auth credential, given the verification ID from
+   * {@link PhoneAuthProvider.verifyPhoneNumber} and the code that was sent to the user's
+   * mobile device.
+   *
+   * @example
+   * ```javascript
+   * const provider = new PhoneAuthProvider(auth);
+   * const verificationId = provider.verifyPhoneNumber(phoneNumber, applicationVerifier);
+   * // Obtain verificationCode from the user.
+   * const authCredential = PhoneAuthProvider.credential(verificationId, verificationCode);
+   * const userCredential = signInWithCredential(auth, authCredential);
+   * ```
+   *
+   * @example
+   * An alternative flow is provided using the `signInWithPhoneNumber` method.
+   * ```javascript
+   * const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, applicationVerifier);
+   * // Obtain verificationCode from the user.
+   * const userCredential = await confirmationResult.confirm(verificationCode);
+   * ```
+   *
+   * @param verificationId - The verification ID returned from {@link PhoneAuthProvider.verifyPhoneNumber}.
+   * @param verificationCode - The verification code sent to the user's mobile device.
+   *
+   * @returns The auth provider credential.
+   */
+  static credential(verificationId, verificationCode) {
+    return PhoneAuthCredential._fromVerification(verificationId, verificationCode);
+  }
+  /**
+   * Generates an {@link AuthCredential} from a {@link UserCredential}.
+   * @param userCredential - The user credential.
+   */
+  static credentialFromResult(userCredential) {
+    const credential = userCredential;
+    return _PhoneAuthProvider.credentialFromTaggedObject(credential);
+  }
+  /**
+   * Returns an {@link AuthCredential} when passed an error.
+   *
+   * @remarks
+   *
+   * This method works for errors like
+   * `auth/account-exists-with-different-credentials`. This is useful for
+   * recovering when attempting to set a user's phone number but the number
+   * in question is already tied to another account. For example, the following
+   * code tries to update the current user's phone number, and if that
+   * fails, links the user with the account associated with that number:
+   *
+   * ```js
+   * const provider = new PhoneAuthProvider(auth);
+   * const verificationId = await provider.verifyPhoneNumber(number, verifier);
+   * try {
+   *   const code = ''; // Prompt the user for the verification code
+   *   await updatePhoneNumber(
+   *       auth.currentUser,
+   *       PhoneAuthProvider.credential(verificationId, code));
+   * } catch (e) {
+   *   if ((e as FirebaseError)?.code === 'auth/account-exists-with-different-credential') {
+   *     const cred = PhoneAuthProvider.credentialFromError(e);
+   *     await linkWithCredential(auth.currentUser, cred);
+   *   }
+   * }
+   *
+   * // At this point, auth.currentUser.phoneNumber === number.
+   * ```
+   *
+   * @param error - The error to generate a credential from.
+   */
+  static credentialFromError(error) {
+    return _PhoneAuthProvider.credentialFromTaggedObject(error.customData || {});
+  }
+  static credentialFromTaggedObject({ _tokenResponse: tokenResponse }) {
+    if (!tokenResponse) {
+      return null;
+    }
+    const { phoneNumber, temporaryProof } = tokenResponse;
+    if (phoneNumber && temporaryProof) {
+      return PhoneAuthCredential._fromTokenResponse(phoneNumber, temporaryProof);
+    }
+    return null;
+  }
+};
+PhoneAuthProvider.PROVIDER_ID = "phone";
+PhoneAuthProvider.PHONE_SIGN_IN_METHOD = "phone";
+function _withDefaultResolver(auth, resolverOverride) {
+  if (resolverOverride) {
+    return _getInstance(resolverOverride);
+  }
+  _assert(
+    auth._popupRedirectResolver,
+    auth,
+    "argument-error"
+    /* AuthErrorCode.ARGUMENT_ERROR */
+  );
+  return auth._popupRedirectResolver;
+}
+var IdpCredential = class extends AuthCredential {
+  constructor(params) {
+    super(
+      "custom",
+      "custom"
+      /* ProviderId.CUSTOM */
+    );
+    this.params = params;
+  }
+  _getIdTokenResponse(auth) {
+    return signInWithIdp(auth, this._buildIdpRequest());
+  }
+  _linkToIdToken(auth, idToken3) {
+    return signInWithIdp(auth, this._buildIdpRequest(idToken3));
+  }
+  _getReauthenticationResolver(auth) {
+    return signInWithIdp(auth, this._buildIdpRequest());
+  }
+  _buildIdpRequest(idToken3) {
+    const request = {
+      requestUri: this.params.requestUri,
+      sessionId: this.params.sessionId,
+      postBody: this.params.postBody,
+      tenantId: this.params.tenantId,
+      pendingToken: this.params.pendingToken,
+      returnSecureToken: true,
+      returnIdpCredential: true
+    };
+    if (idToken3) {
+      request.idToken = idToken3;
+    }
+    return request;
+  }
+};
+function _signIn(params) {
+  return _signInWithCredential(params.auth, new IdpCredential(params), params.bypassAuthState);
+}
+function _reauth(params) {
+  const { auth, user: user3 } = params;
+  _assert(
+    user3,
+    auth,
+    "internal-error"
+    /* AuthErrorCode.INTERNAL_ERROR */
+  );
+  return _reauthenticate(user3, new IdpCredential(params), params.bypassAuthState);
+}
+async function _link(params) {
+  const { auth, user: user3 } = params;
+  _assert(
+    user3,
+    auth,
+    "internal-error"
+    /* AuthErrorCode.INTERNAL_ERROR */
+  );
+  return _link$1(user3, new IdpCredential(params), params.bypassAuthState);
+}
+var AbstractPopupRedirectOperation = class {
+  constructor(auth, filter, resolver, user3, bypassAuthState = false) {
+    this.auth = auth;
+    this.resolver = resolver;
+    this.user = user3;
+    this.bypassAuthState = bypassAuthState;
+    this.pendingPromise = null;
+    this.eventManager = null;
+    this.filter = Array.isArray(filter) ? filter : [filter];
+  }
+  execute() {
+    return new Promise(async (resolve, reject) => {
+      this.pendingPromise = { resolve, reject };
+      try {
+        this.eventManager = await this.resolver._initialize(this.auth);
+        await this.onExecution();
+        this.eventManager.registerConsumer(this);
+      } catch (e) {
+        this.reject(e);
+      }
+    });
+  }
+  async onAuthEvent(event) {
+    const { urlResponse, sessionId, postBody, tenantId, error, type } = event;
+    if (error) {
+      this.reject(error);
+      return;
+    }
+    const params = {
+      auth: this.auth,
+      requestUri: urlResponse,
+      sessionId,
+      tenantId: tenantId || void 0,
+      postBody: postBody || void 0,
+      user: this.user,
+      bypassAuthState: this.bypassAuthState
+    };
+    try {
+      this.resolve(await this.getIdpTask(type)(params));
+    } catch (e) {
+      this.reject(e);
+    }
+  }
+  onError(error) {
+    this.reject(error);
+  }
+  getIdpTask(type) {
+    switch (type) {
+      case "signInViaPopup":
+      case "signInViaRedirect":
+        return _signIn;
+      case "linkViaPopup":
+      case "linkViaRedirect":
+        return _link;
+      case "reauthViaPopup":
+      case "reauthViaRedirect":
+        return _reauth;
+      default:
+        _fail(
+          this.auth,
+          "internal-error"
+          /* AuthErrorCode.INTERNAL_ERROR */
+        );
+    }
+  }
+  resolve(cred) {
+    debugAssert(this.pendingPromise, "Pending promise was never set");
+    this.pendingPromise.resolve(cred);
+    this.unregisterAndCleanUp();
+  }
+  reject(error) {
+    debugAssert(this.pendingPromise, "Pending promise was never set");
+    this.pendingPromise.reject(error);
+    this.unregisterAndCleanUp();
+  }
+  unregisterAndCleanUp() {
+    if (this.eventManager) {
+      this.eventManager.unregisterConsumer(this);
+    }
+    this.pendingPromise = null;
+    this.cleanUp();
+  }
+};
+var _POLL_WINDOW_CLOSE_TIMEOUT = new Delay(2e3, 1e4);
+async function signInWithPopup(auth, provider, resolver) {
+  if (_isFirebaseServerApp(auth.app)) {
+    return Promise.reject(_createError(
+      auth,
+      "operation-not-supported-in-this-environment"
+      /* AuthErrorCode.OPERATION_NOT_SUPPORTED */
+    ));
+  }
+  const authInternal = _castAuth(auth);
+  _assertInstanceOf(auth, provider, FederatedAuthProvider);
+  const resolverInternal = _withDefaultResolver(authInternal, resolver);
+  const action = new PopupOperation(authInternal, "signInViaPopup", provider, resolverInternal);
+  return action.executeNotNull();
+}
+async function reauthenticateWithPopup(user3, provider, resolver) {
+  const userInternal = getModularInstance(user3);
+  if (_isFirebaseServerApp(userInternal.auth.app)) {
+    return Promise.reject(_createError(
+      userInternal.auth,
+      "operation-not-supported-in-this-environment"
+      /* AuthErrorCode.OPERATION_NOT_SUPPORTED */
+    ));
+  }
+  _assertInstanceOf(userInternal.auth, provider, FederatedAuthProvider);
+  const resolverInternal = _withDefaultResolver(userInternal.auth, resolver);
+  const action = new PopupOperation(userInternal.auth, "reauthViaPopup", provider, resolverInternal, userInternal);
+  return action.executeNotNull();
+}
+async function linkWithPopup(user3, provider, resolver) {
+  const userInternal = getModularInstance(user3);
+  _assertInstanceOf(userInternal.auth, provider, FederatedAuthProvider);
+  const resolverInternal = _withDefaultResolver(userInternal.auth, resolver);
+  const action = new PopupOperation(userInternal.auth, "linkViaPopup", provider, resolverInternal, userInternal);
+  return action.executeNotNull();
+}
+var PopupOperation = class _PopupOperation extends AbstractPopupRedirectOperation {
+  constructor(auth, filter, provider, resolver, user3) {
+    super(auth, filter, resolver, user3);
+    this.provider = provider;
+    this.authWindow = null;
+    this.pollId = null;
+    if (_PopupOperation.currentPopupAction) {
+      _PopupOperation.currentPopupAction.cancel();
+    }
+    _PopupOperation.currentPopupAction = this;
+  }
+  async executeNotNull() {
+    const result = await this.execute();
+    _assert(
+      result,
+      this.auth,
+      "internal-error"
+      /* AuthErrorCode.INTERNAL_ERROR */
+    );
+    return result;
+  }
+  async onExecution() {
+    debugAssert(this.filter.length === 1, "Popup operations only handle one event");
+    const eventId = _generateEventId();
+    this.authWindow = await this.resolver._openPopup(
+      this.auth,
+      this.provider,
+      this.filter[0],
+      // There's always one, see constructor
+      eventId
+    );
+    this.authWindow.associatedEvent = eventId;
+    this.resolver._originValidation(this.auth).catch((e) => {
+      this.reject(e);
+    });
+    this.resolver._isIframeWebStorageSupported(this.auth, (isSupported) => {
+      if (!isSupported) {
+        this.reject(_createError(
+          this.auth,
+          "web-storage-unsupported"
+          /* AuthErrorCode.WEB_STORAGE_UNSUPPORTED */
+        ));
+      }
+    });
+    this.pollUserCancellation();
+  }
+  get eventId() {
+    var _a;
+    return ((_a = this.authWindow) === null || _a === void 0 ? void 0 : _a.associatedEvent) || null;
+  }
+  cancel() {
+    this.reject(_createError(
+      this.auth,
+      "cancelled-popup-request"
+      /* AuthErrorCode.EXPIRED_POPUP_REQUEST */
+    ));
+  }
+  cleanUp() {
+    if (this.authWindow) {
+      this.authWindow.close();
+    }
+    if (this.pollId) {
+      window.clearTimeout(this.pollId);
+    }
+    this.authWindow = null;
+    this.pollId = null;
+    _PopupOperation.currentPopupAction = null;
+  }
+  pollUserCancellation() {
+    const poll = () => {
+      var _a, _b;
+      if ((_b = (_a = this.authWindow) === null || _a === void 0 ? void 0 : _a.window) === null || _b === void 0 ? void 0 : _b.closed) {
+        this.pollId = window.setTimeout(
+          () => {
+            this.pollId = null;
+            this.reject(_createError(
+              this.auth,
+              "popup-closed-by-user"
+              /* AuthErrorCode.POPUP_CLOSED_BY_USER */
+            ));
+          },
+          8e3
+          /* _Timeout.AUTH_EVENT */
+        );
+        return;
+      }
+      this.pollId = window.setTimeout(poll, _POLL_WINDOW_CLOSE_TIMEOUT.get());
+    };
+    poll();
+  }
+};
+PopupOperation.currentPopupAction = null;
+var PENDING_REDIRECT_KEY = "pendingRedirect";
+var redirectOutcomeMap = /* @__PURE__ */ new Map();
+var RedirectAction = class extends AbstractPopupRedirectOperation {
+  constructor(auth, resolver, bypassAuthState = false) {
+    super(auth, [
+      "signInViaRedirect",
+      "linkViaRedirect",
+      "reauthViaRedirect",
+      "unknown"
+      /* AuthEventType.UNKNOWN */
+    ], resolver, void 0, bypassAuthState);
+    this.eventId = null;
+  }
+  /**
+   * Override the execute function; if we already have a redirect result, then
+   * just return it.
+   */
+  async execute() {
+    let readyOutcome = redirectOutcomeMap.get(this.auth._key());
+    if (!readyOutcome) {
+      try {
+        const hasPendingRedirect = await _getAndClearPendingRedirectStatus(this.resolver, this.auth);
+        const result = hasPendingRedirect ? await super.execute() : null;
+        readyOutcome = () => Promise.resolve(result);
+      } catch (e) {
+        readyOutcome = () => Promise.reject(e);
+      }
+      redirectOutcomeMap.set(this.auth._key(), readyOutcome);
+    }
+    if (!this.bypassAuthState) {
+      redirectOutcomeMap.set(this.auth._key(), () => Promise.resolve(null));
+    }
+    return readyOutcome();
+  }
+  async onAuthEvent(event) {
+    if (event.type === "signInViaRedirect") {
+      return super.onAuthEvent(event);
+    } else if (event.type === "unknown") {
+      this.resolve(null);
+      return;
+    }
+    if (event.eventId) {
+      const user3 = await this.auth._redirectUserForId(event.eventId);
+      if (user3) {
+        this.user = user3;
+        return super.onAuthEvent(event);
+      } else {
+        this.resolve(null);
+      }
+    }
+  }
+  async onExecution() {
+  }
+  cleanUp() {
+  }
+};
+async function _getAndClearPendingRedirectStatus(resolver, auth) {
+  const key = pendingRedirectKey(auth);
+  const persistence = resolverPersistence(resolver);
+  if (!await persistence._isAvailable()) {
+    return false;
+  }
+  const hasPendingRedirect = await persistence._get(key) === "true";
+  await persistence._remove(key);
+  return hasPendingRedirect;
+}
+async function _setPendingRedirectStatus(resolver, auth) {
+  return resolverPersistence(resolver)._set(pendingRedirectKey(auth), "true");
+}
+function _overrideRedirectResult(auth, result) {
+  redirectOutcomeMap.set(auth._key(), result);
+}
+function resolverPersistence(resolver) {
+  return _getInstance(resolver._redirectPersistence);
+}
+function pendingRedirectKey(auth) {
+  return _persistenceKeyName(PENDING_REDIRECT_KEY, auth.config.apiKey, auth.name);
+}
+function signInWithRedirect(auth, provider, resolver) {
+  return _signInWithRedirect(auth, provider, resolver);
+}
+async function _signInWithRedirect(auth, provider, resolver) {
+  if (_isFirebaseServerApp(auth.app)) {
+    return Promise.reject(_serverAppCurrentUserOperationNotSupportedError(auth));
+  }
+  const authInternal = _castAuth(auth);
+  _assertInstanceOf(auth, provider, FederatedAuthProvider);
+  await authInternal._initializationPromise;
+  const resolverInternal = _withDefaultResolver(authInternal, resolver);
+  await _setPendingRedirectStatus(resolverInternal, authInternal);
+  return resolverInternal._openRedirect(
+    authInternal,
+    provider,
+    "signInViaRedirect"
+    /* AuthEventType.SIGN_IN_VIA_REDIRECT */
+  );
+}
+function reauthenticateWithRedirect(user3, provider, resolver) {
+  return _reauthenticateWithRedirect(user3, provider, resolver);
+}
+async function _reauthenticateWithRedirect(user3, provider, resolver) {
+  const userInternal = getModularInstance(user3);
+  _assertInstanceOf(userInternal.auth, provider, FederatedAuthProvider);
+  if (_isFirebaseServerApp(userInternal.auth.app)) {
+    return Promise.reject(_serverAppCurrentUserOperationNotSupportedError(userInternal.auth));
+  }
+  await userInternal.auth._initializationPromise;
+  const resolverInternal = _withDefaultResolver(userInternal.auth, resolver);
+  await _setPendingRedirectStatus(resolverInternal, userInternal.auth);
+  const eventId = await prepareUserForRedirect(userInternal);
+  return resolverInternal._openRedirect(userInternal.auth, provider, "reauthViaRedirect", eventId);
+}
+function linkWithRedirect(user3, provider, resolver) {
+  return _linkWithRedirect(user3, provider, resolver);
+}
+async function _linkWithRedirect(user3, provider, resolver) {
+  const userInternal = getModularInstance(user3);
+  _assertInstanceOf(userInternal.auth, provider, FederatedAuthProvider);
+  await userInternal.auth._initializationPromise;
+  const resolverInternal = _withDefaultResolver(userInternal.auth, resolver);
+  await _assertLinkedStatus(false, userInternal, provider.providerId);
+  await _setPendingRedirectStatus(resolverInternal, userInternal.auth);
+  const eventId = await prepareUserForRedirect(userInternal);
+  return resolverInternal._openRedirect(userInternal.auth, provider, "linkViaRedirect", eventId);
+}
+async function getRedirectResult(auth, resolver) {
+  await _castAuth(auth)._initializationPromise;
+  return _getRedirectResult(auth, resolver, false);
+}
+async function _getRedirectResult(auth, resolverExtern, bypassAuthState = false) {
+  if (_isFirebaseServerApp(auth.app)) {
+    return Promise.reject(_serverAppCurrentUserOperationNotSupportedError(auth));
+  }
+  const authInternal = _castAuth(auth);
+  const resolver = _withDefaultResolver(authInternal, resolverExtern);
+  const action = new RedirectAction(authInternal, resolver, bypassAuthState);
+  const result = await action.execute();
+  if (result && !bypassAuthState) {
+    delete result.user._redirectEventId;
+    await authInternal._persistUserIfCurrent(result.user);
+    await authInternal._setRedirectUser(null, resolverExtern);
+  }
+  return result;
+}
+async function prepareUserForRedirect(user3) {
+  const eventId = _generateEventId(`${user3.uid}:::`);
+  user3._redirectEventId = eventId;
+  await user3.auth._setRedirectUser(user3);
+  await user3.auth._persistUserIfCurrent(user3);
+  return eventId;
+}
+var EVENT_DUPLICATION_CACHE_DURATION_MS = 10 * 60 * 1e3;
+var AuthEventManager = class {
+  constructor(auth) {
+    this.auth = auth;
+    this.cachedEventUids = /* @__PURE__ */ new Set();
+    this.consumers = /* @__PURE__ */ new Set();
+    this.queuedRedirectEvent = null;
+    this.hasHandledPotentialRedirect = false;
+    this.lastProcessedEventTime = Date.now();
+  }
+  registerConsumer(authEventConsumer) {
+    this.consumers.add(authEventConsumer);
+    if (this.queuedRedirectEvent && this.isEventForConsumer(this.queuedRedirectEvent, authEventConsumer)) {
+      this.sendToConsumer(this.queuedRedirectEvent, authEventConsumer);
+      this.saveEventToCache(this.queuedRedirectEvent);
+      this.queuedRedirectEvent = null;
+    }
+  }
+  unregisterConsumer(authEventConsumer) {
+    this.consumers.delete(authEventConsumer);
+  }
+  onEvent(event) {
+    if (this.hasEventBeenHandled(event)) {
+      return false;
+    }
+    let handled = false;
+    this.consumers.forEach((consumer) => {
+      if (this.isEventForConsumer(event, consumer)) {
+        handled = true;
+        this.sendToConsumer(event, consumer);
+        this.saveEventToCache(event);
+      }
+    });
+    if (this.hasHandledPotentialRedirect || !isRedirectEvent(event)) {
+      return handled;
+    }
+    this.hasHandledPotentialRedirect = true;
+    if (!handled) {
+      this.queuedRedirectEvent = event;
+      handled = true;
+    }
+    return handled;
+  }
+  sendToConsumer(event, consumer) {
+    var _a;
+    if (event.error && !isNullRedirectEvent(event)) {
+      const code = ((_a = event.error.code) === null || _a === void 0 ? void 0 : _a.split("auth/")[1]) || "internal-error";
+      consumer.onError(_createError(this.auth, code));
+    } else {
+      consumer.onAuthEvent(event);
+    }
+  }
+  isEventForConsumer(event, consumer) {
+    const eventIdMatches = consumer.eventId === null || !!event.eventId && event.eventId === consumer.eventId;
+    return consumer.filter.includes(event.type) && eventIdMatches;
+  }
+  hasEventBeenHandled(event) {
+    if (Date.now() - this.lastProcessedEventTime >= EVENT_DUPLICATION_CACHE_DURATION_MS) {
+      this.cachedEventUids.clear();
+    }
+    return this.cachedEventUids.has(eventUid(event));
+  }
+  saveEventToCache(event) {
+    this.cachedEventUids.add(eventUid(event));
+    this.lastProcessedEventTime = Date.now();
+  }
+};
+function eventUid(e) {
+  return [e.type, e.eventId, e.sessionId, e.tenantId].filter((v) => v).join("-");
+}
+function isNullRedirectEvent({ type, error }) {
+  return type === "unknown" && (error === null || error === void 0 ? void 0 : error.code) === `auth/${"no-auth-event"}`;
+}
+function isRedirectEvent(event) {
+  switch (event.type) {
+    case "signInViaRedirect":
+    case "linkViaRedirect":
+    case "reauthViaRedirect":
+      return true;
+    case "unknown":
+      return isNullRedirectEvent(event);
+    default:
+      return false;
+  }
+}
+async function _getProjectConfig(auth, request = {}) {
+  return _performApiRequest(auth, "GET", "/v1/projects", request);
+}
+var IP_ADDRESS_REGEX = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+var HTTP_REGEX = /^https?/;
+async function _validateOrigin(auth) {
+  if (auth.config.emulator) {
+    return;
+  }
+  const { authorizedDomains } = await _getProjectConfig(auth);
+  for (const domain of authorizedDomains) {
+    try {
+      if (matchDomain(domain)) {
+        return;
+      }
+    } catch (_a) {
+    }
+  }
+  _fail(
+    auth,
+    "unauthorized-domain"
+    /* AuthErrorCode.INVALID_ORIGIN */
+  );
+}
+function matchDomain(expected) {
+  const currentUrl = _getCurrentUrl();
+  const { protocol, hostname } = new URL(currentUrl);
+  if (expected.startsWith("chrome-extension://")) {
+    const ceUrl = new URL(expected);
+    if (ceUrl.hostname === "" && hostname === "") {
+      return protocol === "chrome-extension:" && expected.replace("chrome-extension://", "") === currentUrl.replace("chrome-extension://", "");
+    }
+    return protocol === "chrome-extension:" && ceUrl.hostname === hostname;
+  }
+  if (!HTTP_REGEX.test(protocol)) {
+    return false;
+  }
+  if (IP_ADDRESS_REGEX.test(expected)) {
+    return hostname === expected;
+  }
+  const escapedDomainPattern = expected.replace(/\./g, "\\.");
+  const re = new RegExp("^(.+\\." + escapedDomainPattern + "|" + escapedDomainPattern + ")$", "i");
+  return re.test(hostname);
+}
+var NETWORK_TIMEOUT = new Delay(3e4, 6e4);
+function resetUnloadedGapiModules() {
+  const beacon = _window().___jsl;
+  if (beacon === null || beacon === void 0 ? void 0 : beacon.H) {
+    for (const hint of Object.keys(beacon.H)) {
+      beacon.H[hint].r = beacon.H[hint].r || [];
+      beacon.H[hint].L = beacon.H[hint].L || [];
+      beacon.H[hint].r = [...beacon.H[hint].L];
+      if (beacon.CP) {
+        for (let i = 0; i < beacon.CP.length; i++) {
+          beacon.CP[i] = null;
+        }
+      }
+    }
+  }
+}
+function loadGapi(auth) {
+  return new Promise((resolve, reject) => {
+    var _a, _b, _c;
+    function loadGapiIframe() {
+      resetUnloadedGapiModules();
+      gapi.load("gapi.iframes", {
+        callback: () => {
+          resolve(gapi.iframes.getContext());
+        },
+        ontimeout: () => {
+          resetUnloadedGapiModules();
+          reject(_createError(
+            auth,
+            "network-request-failed"
+            /* AuthErrorCode.NETWORK_REQUEST_FAILED */
+          ));
+        },
+        timeout: NETWORK_TIMEOUT.get()
+      });
+    }
+    if ((_b = (_a = _window().gapi) === null || _a === void 0 ? void 0 : _a.iframes) === null || _b === void 0 ? void 0 : _b.Iframe) {
+      resolve(gapi.iframes.getContext());
+    } else if (!!((_c = _window().gapi) === null || _c === void 0 ? void 0 : _c.load)) {
+      loadGapiIframe();
+    } else {
+      const cbName = _generateCallbackName("iframefcb");
+      _window()[cbName] = () => {
+        if (!!gapi.load) {
+          loadGapiIframe();
+        } else {
+          reject(_createError(
+            auth,
+            "network-request-failed"
+            /* AuthErrorCode.NETWORK_REQUEST_FAILED */
+          ));
+        }
+      };
+      return _loadJS(`${_gapiScriptUrl()}?onload=${cbName}`).catch((e) => reject(e));
+    }
+  }).catch((error) => {
+    cachedGApiLoader = null;
+    throw error;
+  });
+}
+var cachedGApiLoader = null;
+function _loadGapi(auth) {
+  cachedGApiLoader = cachedGApiLoader || loadGapi(auth);
+  return cachedGApiLoader;
+}
+var PING_TIMEOUT = new Delay(5e3, 15e3);
+var IFRAME_PATH = "__/auth/iframe";
+var EMULATED_IFRAME_PATH = "emulator/auth/iframe";
+var IFRAME_ATTRIBUTES = {
+  style: {
+    position: "absolute",
+    top: "-100px",
+    width: "1px",
+    height: "1px"
+  },
+  "aria-hidden": "true",
+  tabindex: "-1"
+};
+var EID_FROM_APIHOST = /* @__PURE__ */ new Map([
+  ["identitytoolkit.googleapis.com", "p"],
+  // production
+  ["staging-identitytoolkit.sandbox.googleapis.com", "s"],
+  // staging
+  ["test-identitytoolkit.sandbox.googleapis.com", "t"]
+  // test
+]);
+function getIframeUrl(auth) {
+  const config = auth.config;
+  _assert(
+    config.authDomain,
+    auth,
+    "auth-domain-config-required"
+    /* AuthErrorCode.MISSING_AUTH_DOMAIN */
+  );
+  const url = config.emulator ? _emulatorUrl(config, EMULATED_IFRAME_PATH) : `https://${auth.config.authDomain}/${IFRAME_PATH}`;
+  const params = {
+    apiKey: config.apiKey,
+    appName: auth.name,
+    v: SDK_VERSION
+  };
+  const eid = EID_FROM_APIHOST.get(auth.config.apiHost);
+  if (eid) {
+    params.eid = eid;
+  }
+  const frameworks = auth._getFrameworks();
+  if (frameworks.length) {
+    params.fw = frameworks.join(",");
+  }
+  return `${url}?${querystring(params).slice(1)}`;
+}
+async function _openIframe(auth) {
+  const context = await _loadGapi(auth);
+  const gapi2 = _window().gapi;
+  _assert(
+    gapi2,
+    auth,
+    "internal-error"
+    /* AuthErrorCode.INTERNAL_ERROR */
+  );
+  return context.open({
+    where: document.body,
+    url: getIframeUrl(auth),
+    messageHandlersFilter: gapi2.iframes.CROSS_ORIGIN_IFRAMES_FILTER,
+    attributes: IFRAME_ATTRIBUTES,
+    dontclear: true
+  }, (iframe) => new Promise(async (resolve, reject) => {
+    await iframe.restyle({
+      // Prevent iframe from closing on mouse out.
+      setHideOnLeave: false
+    });
+    const networkError = _createError(
+      auth,
+      "network-request-failed"
+      /* AuthErrorCode.NETWORK_REQUEST_FAILED */
+    );
+    const networkErrorTimer = _window().setTimeout(() => {
+      reject(networkError);
+    }, PING_TIMEOUT.get());
+    function clearTimerAndResolve() {
+      _window().clearTimeout(networkErrorTimer);
+      resolve(iframe);
+    }
+    iframe.ping(clearTimerAndResolve).then(clearTimerAndResolve, () => {
+      reject(networkError);
+    });
+  }));
+}
+var BASE_POPUP_OPTIONS = {
+  location: "yes",
+  resizable: "yes",
+  statusbar: "yes",
+  toolbar: "no"
+};
+var DEFAULT_WIDTH = 500;
+var DEFAULT_HEIGHT = 600;
+var TARGET_BLANK = "_blank";
+var FIREFOX_EMPTY_URL = "http://localhost";
+var AuthPopup = class {
+  constructor(window2) {
+    this.window = window2;
+    this.associatedEvent = null;
+  }
+  close() {
+    if (this.window) {
+      try {
+        this.window.close();
+      } catch (e) {
+      }
+    }
+  }
+};
+function _open(auth, url, name3, width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT) {
+  const top = Math.max((window.screen.availHeight - height) / 2, 0).toString();
+  const left = Math.max((window.screen.availWidth - width) / 2, 0).toString();
+  let target = "";
+  const options = Object.assign(Object.assign({}, BASE_POPUP_OPTIONS), {
+    width: width.toString(),
+    height: height.toString(),
+    top,
+    left
+  });
+  const ua = getUA().toLowerCase();
+  if (name3) {
+    target = _isChromeIOS(ua) ? TARGET_BLANK : name3;
+  }
+  if (_isFirefox(ua)) {
+    url = url || FIREFOX_EMPTY_URL;
+    options.scrollbars = "yes";
+  }
+  const optionsString = Object.entries(options).reduce((accum, [key, value]) => `${accum}${key}=${value},`, "");
+  if (_isIOSStandalone(ua) && target !== "_self") {
+    openAsNewWindowIOS(url || "", target);
+    return new AuthPopup(null);
+  }
+  const newWin = window.open(url || "", target, optionsString);
+  _assert(
+    newWin,
+    auth,
+    "popup-blocked"
+    /* AuthErrorCode.POPUP_BLOCKED */
+  );
+  try {
+    newWin.focus();
+  } catch (e) {
+  }
+  return new AuthPopup(newWin);
+}
+function openAsNewWindowIOS(url, target) {
+  const el = document.createElement("a");
+  el.href = url;
+  el.target = target;
+  const click = document.createEvent("MouseEvent");
+  click.initMouseEvent("click", true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 1, null);
+  el.dispatchEvent(click);
+}
+var WIDGET_PATH = "__/auth/handler";
+var EMULATOR_WIDGET_PATH = "emulator/auth/handler";
+var FIREBASE_APP_CHECK_FRAGMENT_ID = encodeURIComponent("fac");
+async function _getRedirectUrl(auth, provider, authType, redirectUrl, eventId, additionalParams) {
+  _assert(
+    auth.config.authDomain,
+    auth,
+    "auth-domain-config-required"
+    /* AuthErrorCode.MISSING_AUTH_DOMAIN */
+  );
+  _assert(
+    auth.config.apiKey,
+    auth,
+    "invalid-api-key"
+    /* AuthErrorCode.INVALID_API_KEY */
+  );
+  const params = {
+    apiKey: auth.config.apiKey,
+    appName: auth.name,
+    authType,
+    redirectUrl,
+    v: SDK_VERSION,
+    eventId
+  };
+  if (provider instanceof FederatedAuthProvider) {
+    provider.setDefaultLanguage(auth.languageCode);
+    params.providerId = provider.providerId || "";
+    if (!isEmpty(provider.getCustomParameters())) {
+      params.customParameters = JSON.stringify(provider.getCustomParameters());
+    }
+    for (const [key, value] of Object.entries(additionalParams || {})) {
+      params[key] = value;
+    }
+  }
+  if (provider instanceof BaseOAuthProvider) {
+    const scopes = provider.getScopes().filter((scope) => scope !== "");
+    if (scopes.length > 0) {
+      params.scopes = scopes.join(",");
+    }
+  }
+  if (auth.tenantId) {
+    params.tid = auth.tenantId;
+  }
+  const paramsDict = params;
+  for (const key of Object.keys(paramsDict)) {
+    if (paramsDict[key] === void 0) {
+      delete paramsDict[key];
+    }
+  }
+  const appCheckToken = await auth._getAppCheckToken();
+  const appCheckTokenFragment = appCheckToken ? `#${FIREBASE_APP_CHECK_FRAGMENT_ID}=${encodeURIComponent(appCheckToken)}` : "";
+  return `${getHandlerBase(auth)}?${querystring(paramsDict).slice(1)}${appCheckTokenFragment}`;
+}
+function getHandlerBase({ config }) {
+  if (!config.emulator) {
+    return `https://${config.authDomain}/${WIDGET_PATH}`;
+  }
+  return _emulatorUrl(config, EMULATOR_WIDGET_PATH);
+}
+var WEB_STORAGE_SUPPORT_KEY = "webStorageSupport";
+var BrowserPopupRedirectResolver = class {
+  constructor() {
+    this.eventManagers = {};
+    this.iframes = {};
+    this.originValidationPromises = {};
+    this._redirectPersistence = browserSessionPersistence;
+    this._completeRedirectFn = _getRedirectResult;
+    this._overrideRedirectResult = _overrideRedirectResult;
+  }
+  // Wrapping in async even though we don't await anywhere in order
+  // to make sure errors are raised as promise rejections
+  async _openPopup(auth, provider, authType, eventId) {
+    var _a;
+    debugAssert((_a = this.eventManagers[auth._key()]) === null || _a === void 0 ? void 0 : _a.manager, "_initialize() not called before _openPopup()");
+    const url = await _getRedirectUrl(auth, provider, authType, _getCurrentUrl(), eventId);
+    return _open(auth, url, _generateEventId());
+  }
+  async _openRedirect(auth, provider, authType, eventId) {
+    await this._originValidation(auth);
+    const url = await _getRedirectUrl(auth, provider, authType, _getCurrentUrl(), eventId);
+    _setWindowLocation(url);
+    return new Promise(() => {
+    });
+  }
+  _initialize(auth) {
+    const key = auth._key();
+    if (this.eventManagers[key]) {
+      const { manager, promise: promise2 } = this.eventManagers[key];
+      if (manager) {
+        return Promise.resolve(manager);
+      } else {
+        debugAssert(promise2, "If manager is not set, promise should be");
+        return promise2;
+      }
+    }
+    const promise = this.initAndGetManager(auth);
+    this.eventManagers[key] = { promise };
+    promise.catch(() => {
+      delete this.eventManagers[key];
+    });
+    return promise;
+  }
+  async initAndGetManager(auth) {
+    const iframe = await _openIframe(auth);
+    const manager = new AuthEventManager(auth);
+    iframe.register("authEvent", (iframeEvent) => {
+      _assert(
+        iframeEvent === null || iframeEvent === void 0 ? void 0 : iframeEvent.authEvent,
+        auth,
+        "invalid-auth-event"
+        /* AuthErrorCode.INVALID_AUTH_EVENT */
+      );
+      const handled = manager.onEvent(iframeEvent.authEvent);
+      return {
+        status: handled ? "ACK" : "ERROR"
+        /* GapiOutcome.ERROR */
+      };
+    }, gapi.iframes.CROSS_ORIGIN_IFRAMES_FILTER);
+    this.eventManagers[auth._key()] = { manager };
+    this.iframes[auth._key()] = iframe;
+    return manager;
+  }
+  _isIframeWebStorageSupported(auth, cb) {
+    const iframe = this.iframes[auth._key()];
+    iframe.send(WEB_STORAGE_SUPPORT_KEY, { type: WEB_STORAGE_SUPPORT_KEY }, (result) => {
+      var _a;
+      const isSupported = (_a = result === null || result === void 0 ? void 0 : result[0]) === null || _a === void 0 ? void 0 : _a[WEB_STORAGE_SUPPORT_KEY];
+      if (isSupported !== void 0) {
+        cb(!!isSupported);
+      }
+      _fail(
+        auth,
+        "internal-error"
+        /* AuthErrorCode.INTERNAL_ERROR */
+      );
+    }, gapi.iframes.CROSS_ORIGIN_IFRAMES_FILTER);
+  }
+  _originValidation(auth) {
+    const key = auth._key();
+    if (!this.originValidationPromises[key]) {
+      this.originValidationPromises[key] = _validateOrigin(auth);
+    }
+    return this.originValidationPromises[key];
+  }
+  get _shouldInitProactively() {
+    return _isMobileBrowser() || _isSafari() || _isIOS();
+  }
+};
+var browserPopupRedirectResolver = BrowserPopupRedirectResolver;
 var MultiFactorAssertionImpl = class {
   constructor(factorId) {
     this.factorId = factorId;
@@ -6184,6 +8586,52 @@ var MultiFactorAssertionImpl = class {
     }
   }
 };
+var PhoneMultiFactorAssertionImpl = class _PhoneMultiFactorAssertionImpl extends MultiFactorAssertionImpl {
+  constructor(credential) {
+    super(
+      "phone"
+      /* FactorId.PHONE */
+    );
+    this.credential = credential;
+  }
+  /** @internal */
+  static _fromCredential(credential) {
+    return new _PhoneMultiFactorAssertionImpl(credential);
+  }
+  /** @internal */
+  _finalizeEnroll(auth, idToken3, displayName) {
+    return finalizeEnrollPhoneMfa(auth, {
+      idToken: idToken3,
+      displayName,
+      phoneVerificationInfo: this.credential._makeVerificationRequest()
+    });
+  }
+  /** @internal */
+  _finalizeSignIn(auth, mfaPendingCredential) {
+    return finalizeSignInPhoneMfa(auth, {
+      mfaPendingCredential,
+      phoneVerificationInfo: this.credential._makeVerificationRequest()
+    });
+  }
+};
+var PhoneMultiFactorGenerator = class {
+  constructor() {
+  }
+  /**
+   * Provides a {@link PhoneMultiFactorAssertion} to confirm ownership of the phone second factor.
+   *
+   * @remarks
+   * This method does not work in a Node.js environment.
+   *
+   * @param phoneAuthCredential - A credential provided by {@link PhoneAuthProvider.credential}.
+   * @returns A {@link PhoneMultiFactorAssertion} which can be used with
+   * {@link MultiFactorResolver.resolveSignIn}
+   */
+  static assertion(credential) {
+    return PhoneMultiFactorAssertionImpl._fromCredential(credential);
+  }
+};
+PhoneMultiFactorGenerator.FACTOR_ID = "phone";
 var TotpMultiFactorGenerator = class {
   /**
    * Provides a {@link TotpMultiFactorAssertion} to confirm ownership of
@@ -6332,29 +8780,232 @@ var TotpSecret = class _TotpSecret {
 function _isEmptyString(input) {
   return typeof input === "undefined" || (input === null || input === void 0 ? void 0 : input.length) === 0;
 }
+var name2 = "@firebase/auth";
+var version2 = "1.10.8";
+var AuthInterop = class {
+  constructor(auth) {
+    this.auth = auth;
+    this.internalListeners = /* @__PURE__ */ new Map();
+  }
+  getUid() {
+    var _a;
+    this.assertAuthConfigured();
+    return ((_a = this.auth.currentUser) === null || _a === void 0 ? void 0 : _a.uid) || null;
+  }
+  async getToken(forceRefresh) {
+    this.assertAuthConfigured();
+    await this.auth._initializationPromise;
+    if (!this.auth.currentUser) {
+      return null;
+    }
+    const accessToken = await this.auth.currentUser.getIdToken(forceRefresh);
+    return { accessToken };
+  }
+  addAuthTokenListener(listener) {
+    this.assertAuthConfigured();
+    if (this.internalListeners.has(listener)) {
+      return;
+    }
+    const unsubscribe = this.auth.onIdTokenChanged((user3) => {
+      listener((user3 === null || user3 === void 0 ? void 0 : user3.stsTokenManager.accessToken) || null);
+    });
+    this.internalListeners.set(listener, unsubscribe);
+    this.updateProactiveRefresh();
+  }
+  removeAuthTokenListener(listener) {
+    this.assertAuthConfigured();
+    const unsubscribe = this.internalListeners.get(listener);
+    if (!unsubscribe) {
+      return;
+    }
+    this.internalListeners.delete(listener);
+    unsubscribe();
+    this.updateProactiveRefresh();
+  }
+  assertAuthConfigured() {
+    _assert(
+      this.auth._initializationPromise,
+      "dependent-sdk-initialized-before-auth"
+      /* AuthErrorCode.DEPENDENT_SDK_INIT_BEFORE_AUTH */
+    );
+  }
+  updateProactiveRefresh() {
+    if (this.internalListeners.size > 0) {
+      this.auth._startProactiveRefresh();
+    } else {
+      this.auth._stopProactiveRefresh();
+    }
+  }
+};
+function getVersionForPlatform(clientPlatform) {
+  switch (clientPlatform) {
+    case "Node":
+      return "node";
+    case "ReactNative":
+      return "rn";
+    case "Worker":
+      return "webworker";
+    case "Cordova":
+      return "cordova";
+    case "WebExtension":
+      return "web-extension";
+    default:
+      return void 0;
+  }
+}
+function registerAuth(clientPlatform) {
+  _registerComponent(new Component(
+    "auth",
+    (container, { options: deps }) => {
+      const app = container.getProvider("app").getImmediate();
+      const heartbeatServiceProvider = container.getProvider("heartbeat");
+      const appCheckServiceProvider = container.getProvider("app-check-internal");
+      const { apiKey, authDomain } = app.options;
+      _assert(apiKey && !apiKey.includes(":"), "invalid-api-key", { appName: app.name });
+      const config = {
+        apiKey,
+        authDomain,
+        clientPlatform,
+        apiHost: "identitytoolkit.googleapis.com",
+        tokenApiHost: "securetoken.googleapis.com",
+        apiScheme: "https",
+        sdkClientVersion: _getClientVersion(clientPlatform)
+      };
+      const authInstance = new AuthImpl(app, heartbeatServiceProvider, appCheckServiceProvider, config);
+      _initializeAuthInstance(authInstance, deps);
+      return authInstance;
+    },
+    "PUBLIC"
+    /* ComponentType.PUBLIC */
+  ).setInstantiationMode(
+    "EXPLICIT"
+    /* InstantiationMode.EXPLICIT */
+  ).setInstanceCreatedCallback((container, _instanceIdentifier, _instance) => {
+    const authInternalProvider = container.getProvider(
+      "auth-internal"
+      /* _ComponentName.AUTH_INTERNAL */
+    );
+    authInternalProvider.initialize();
+  }));
+  _registerComponent(new Component(
+    "auth-internal",
+    (container) => {
+      const auth = _castAuth(container.getProvider(
+        "auth"
+        /* _ComponentName.AUTH */
+      ).getImmediate());
+      return ((auth2) => new AuthInterop(auth2))(auth);
+    },
+    "PRIVATE"
+    /* ComponentType.PRIVATE */
+  ).setInstantiationMode(
+    "EXPLICIT"
+    /* InstantiationMode.EXPLICIT */
+  ));
+  registerVersion(name2, version2, getVersionForPlatform(clientPlatform));
+  registerVersion(name2, version2, "esm2017");
+}
+var DEFAULT_ID_TOKEN_MAX_AGE = 5 * 60;
+var authIdTokenMaxAge = getExperimentalSetting("authIdTokenMaxAge") || DEFAULT_ID_TOKEN_MAX_AGE;
+var lastPostedIdToken = null;
+var mintCookieFactory = (url) => async (user3) => {
+  const idTokenResult = user3 && await user3.getIdTokenResult();
+  const idTokenAge = idTokenResult && ((/* @__PURE__ */ new Date()).getTime() - Date.parse(idTokenResult.issuedAtTime)) / 1e3;
+  if (idTokenAge && idTokenAge > authIdTokenMaxAge) {
+    return;
+  }
+  const idToken3 = idTokenResult === null || idTokenResult === void 0 ? void 0 : idTokenResult.token;
+  if (lastPostedIdToken === idToken3) {
+    return;
+  }
+  lastPostedIdToken = idToken3;
+  await fetch(url, {
+    method: idToken3 ? "POST" : "DELETE",
+    headers: idToken3 ? {
+      "Authorization": `Bearer ${idToken3}`
+    } : {}
+  });
+};
+function getAuth(app = getApp()) {
+  const provider = _getProvider(app, "auth");
+  if (provider.isInitialized()) {
+    return provider.getImmediate();
+  }
+  const auth = initializeAuth(app, {
+    popupRedirectResolver: browserPopupRedirectResolver,
+    persistence: [
+      indexedDBLocalPersistence,
+      browserLocalPersistence,
+      browserSessionPersistence
+    ]
+  });
+  const authTokenSyncPath = getExperimentalSetting("authTokenSyncURL");
+  if (authTokenSyncPath && typeof isSecureContext === "boolean" && isSecureContext) {
+    const authTokenSyncUrl = new URL(authTokenSyncPath, location.origin);
+    if (location.origin === authTokenSyncUrl.origin) {
+      const mintCookie = mintCookieFactory(authTokenSyncUrl.toString());
+      beforeAuthStateChanged(auth, mintCookie, () => mintCookie(auth.currentUser));
+      onIdTokenChanged(auth, (user3) => mintCookie(user3));
+    }
+  }
+  const authEmulatorHost = getDefaultEmulatorHost("auth");
+  if (authEmulatorHost) {
+    connectAuthEmulator(auth, `http://${authEmulatorHost}`);
+  }
+  return auth;
+}
+function getScriptParentElement() {
+  var _a, _b;
+  return (_b = (_a = document.getElementsByTagName("head")) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : document;
+}
+_setExternalJSProvider({
+  loadJS(url) {
+    return new Promise((resolve, reject) => {
+      const el = document.createElement("script");
+      el.setAttribute("src", url);
+      el.onload = resolve;
+      el.onerror = (e) => {
+        const error = _createError(
+          "internal-error"
+          /* AuthErrorCode.INTERNAL_ERROR */
+        );
+        error.customData = e;
+        reject(error);
+      };
+      el.type = "text/javascript";
+      el.charset = "UTF-8";
+      getScriptParentElement().appendChild(el);
+    });
+  },
+  gapiScript: "https://apis.google.com/js/api.js",
+  recaptchaV2Script: "https://www.google.com/recaptcha/api.js",
+  recaptchaEnterpriseScript: "https://www.google.com/recaptcha/enterprise.js?render="
+});
+registerAuth(
+  "Browser"
+  /* ClientPlatform.BROWSER */
+);
 
-// ../../../node_modules/rxfire/auth/index.esm.js
-var import_rxjs2 = __toESM(require_cjs());
-var import_operators2 = __toESM(require_operators());
+// node_modules/rxfire/auth/index.esm.js
 function authState(auth) {
-  return new import_rxjs2.Observable(function(subscriber) {
+  return new Observable(function(subscriber) {
     var unsubscribe = onAuthStateChanged(auth, subscriber.next.bind(subscriber), subscriber.error.bind(subscriber), subscriber.complete.bind(subscriber));
     return { unsubscribe };
   });
 }
 function user(auth) {
-  return new import_rxjs2.Observable(function(subscriber) {
+  return new Observable(function(subscriber) {
     var unsubscribe = onIdTokenChanged(auth, subscriber.next.bind(subscriber), subscriber.error.bind(subscriber), subscriber.complete.bind(subscriber));
     return { unsubscribe };
   });
 }
 function idToken(auth) {
-  return user(auth).pipe((0, import_operators2.switchMap)(function(user3) {
-    return user3 ? (0, import_rxjs2.from)(getIdToken(user3)) : (0, import_rxjs2.of)(null);
+  return user(auth).pipe(switchMap(function(user3) {
+    return user3 ? from(getIdToken(user3)) : of(null);
   }));
 }
 
-// ../../../node_modules/@angular/fire/fesm2022/angular-fire-auth.mjs
+// node_modules/@angular/fire/fesm2022/angular-fire-auth.mjs
 var AUTH_PROVIDER_NAME = "auth";
 var Auth = class {
   constructor(auth) {
@@ -6366,7 +9017,7 @@ var AuthInstances = class {
     return ɵgetAllInstancesOf(AUTH_PROVIDER_NAME);
   }
 };
-var authInstance$ = (0, import_rxjs3.timer)(0, 300).pipe((0, import_operators3.concatMap)(() => (0, import_rxjs3.from)(ɵgetAllInstancesOf(AUTH_PROVIDER_NAME))), (0, import_operators3.distinct)());
+var authInstance$ = timer(0, 300).pipe(concatMap(() => from(ɵgetAllInstancesOf(AUTH_PROVIDER_NAME))), distinct());
 var PROVIDED_AUTH_INSTANCES = new InjectionToken("angularfire2.auth-instances");
 function defaultAuthInstanceFactory(provided, defaultApp) {
   const defaultAuth = ɵgetDefaultInstanceOf(AUTH_PROVIDER_NAME, provided, defaultApp);
@@ -6500,12 +9151,12 @@ export {
   TwitterAuthProvider,
   multiFactor,
   browserLocalPersistence,
-  browserSessionPersistence,
   browserCookiePersistence,
+  browserSessionPersistence,
   indexedDBLocalPersistence,
-  browserPopupRedirectResolver,
-  PhoneAuthProvider,
   RecaptchaVerifier,
+  PhoneAuthProvider,
+  browserPopupRedirectResolver,
   PhoneMultiFactorGenerator,
   TotpMultiFactorGenerator,
   TotpSecret,
@@ -6571,4 +9222,4 @@ export {
   verifyBeforeUpdateEmail2 as verifyBeforeUpdateEmail,
   verifyPasswordResetCode2 as verifyPasswordResetCode
 };
-//# sourceMappingURL=chunk-GLCMY3HY.js.map
+//# sourceMappingURL=chunk-KFRUTFEU.js.map

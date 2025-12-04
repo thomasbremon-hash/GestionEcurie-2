@@ -1,8 +1,8 @@
 <button (click)="toggleMenu()">☰</button>
 
-@if (show()) {
+@if(show()) {
 <ul>
-  @for (link of navigations(); track $index) {
+  @for(link of navigations(); track $index) {
   <li (click)="show.set(false)" [class.mb-20]="!$last">
     <a [routerLink]="link.path" routerLinkActive="active-link">
       {{ link.name }}
